@@ -1,0 +1,173 @@
+<!doctype html>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Flashcards</title>
+<style>
+  body { font: 16px -apple-system, system-ui, sans-serif; margin: 18px; }
+  .row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px; align-items:center; }
+  button { padding:10px 12px; border-radius:10px; border:1px solid #ccc; background:#fff; }
+  button:disabled { opacity: .45; }
+  .card { border:1px solid #ccc; border-radius:14px; padding:18px; min-height:180px; }
+  .term { font-size: 22px; font-weight:700; margin-bottom:10px; }
+  .def  { font-size: 18px; line-height:1.35; }
+  .meta { opacity:.7; margin-top:10px; }
+  .pill { padding:4px 10px; border-radius:999px; border:1px solid #ddd; }
+</style>
+
+<div class="row">
+  <button id="flip">Flip</button>
+  <button id="prev">◀︎ Prev</button>
+  <button id="next">Next ▶︎</button>
+  <button id="know">Know it ✓ (remove)</button>
+  <button id="undo">Undo</button>
+  <button id="reset">Reset</button>
+  <span class="pill" id="status"></span>
+</div>
+
+<div class="card" id="card"></div>
+
+<script>
+  // ---- Put your cards here ----
+  // Tip: keep term short; put the “axiom sentence” at end of def if you want.
+  const CARDS = [
+    { term: "Entropy", def: "A measure of uncertainty / average surprise in a distribution." },
+    { term: "Information Gain", def: "Expected reduction in entropy after a split." },
+    { term: "Hypothesis Space", def: "The set of candidate models you allow the learner to consider." },
+  ];
+
+  const KEY = "flip_remove_flashcards_v1";
+
+  const freshState = () => ({
+    // activeIndices = cards still in the deck
+    activeIndices: [...CARDS.keys()],
+    i: 0,
+    showDef: false,
+    // history stack for undo: [{idx, pos}]
+    removed: []
+  });
+
+  const load = () => {
+    try {
+      const s = JSON.parse(localStorage.getItem(KEY) || "null");
+      if (!s) return freshState();
+      // basic sanity: if CARDS length changed, reset
+      if (!Array.isArray(s.activeIndices) || CARDS.length === 0) return freshState();
+      const max = CARDS.length - 1;
+      s.activeIndices = s.activeIndices.filter(n => Number.isInteger(n) && n >= 0 && n <= max);
+      if (s.activeIndices.length === 0) s.activeIndices = [];
+      s.i = Number.isInteger(s.i) ? s.i : 0;
+      s.showDef = !!s.showDef;
+      s.removed = Array.isArray(s.removed) ? s.removed : [];
+      clamp(s);
+      return s;
+    } catch {
+      return freshState();
+    }
+  };
+
+  const save = (s) => localStorage.setItem(KEY, JSON.stringify(s));
+
+  function clamp(s) {
+    if (s.activeIndices.length === 0) { s.i = 0; return; }
+    s.i = Math.max(0, Math.min(s.i, s.activeIndices.length - 1));
+  }
+
+  let state = load();
+
+  function currentCard() {
+    if (state.activeIndices.length === 0) return null;
+    const idx = state.activeIndices[state.i];
+    return { idx, card: CARDS[idx] };
+  }
+
+  function render() {
+    const c = currentCard();
+    const remaining = state.activeIndices.length;
+    const total = CARDS.length;
+
+    document.getElementById("status").textContent = `Remaining: ${remaining} / ${total}`;
+    document.getElementById("prev").disabled = remaining === 0 || state.i === 0;
+    document.getElementById("next").disabled = remaining === 0 || state.i === remaining - 1;
+    document.getElementById("flip").disabled = remaining === 0;
+    document.getElementById("know").disabled = remaining === 0;
+    document.getElementById("undo").disabled = state.removed.length === 0;
+
+    const el = document.getElementById("card");
+    if (!c) {
+      el.innerHTML = `
+        <div class="term">Deck cleared ✅</div>
+        <div class="def">You removed every card. Hit <b>Reset</b> to start again, or <b>Undo</b> to bring one back.</div>
+        <div class="meta"></div>
+      `;
+      save(state);
+      return;
+    }
+
+    el.innerHTML = `
+      <div class="term">${c.card.term}</div>
+      <div class="def">${state.showDef ? c.card.def : "<em>(tap Flip to reveal)</em>"}</div>
+      <div class="meta">${state.i + 1}/${remaining}</div>
+    `;
+
+    save(state);
+  }
+
+  // Controls
+  document.getElementById("flip").onclick = () => { state.showDef = !state.showDef; render(); };
+
+  document.getElementById("next").onclick = () => {
+    state.showDef = false;
+    state.i++;
+    clamp(state);
+    render();
+  };
+
+  document.getElementById("prev").onclick = () => {
+    state.showDef = false;
+    state.i--;
+    clamp(state);
+    render();
+  };
+
+  document.getElementById("know").onclick = () => {
+    const c = currentCard();
+    if (!c) return;
+
+    // record removal for undo: idx removed + position it had in activeIndices
+    state.removed.push({ idx: c.idx, pos: state.i });
+
+    // remove from active deck
+    state.activeIndices.splice(state.i, 1);
+
+    // keep index in range
+    state.showDef = false;
+    clamp(state);
+    render();
+  };
+
+  document.getElementById("undo").onclick = () => {
+    const last = state.removed.pop();
+    if (!last) return;
+
+    // reinsert near where it was removed (bounded)
+    const pos = Math.max(0, Math.min(last.pos, state.activeIndices.length));
+    state.activeIndices.splice(pos, 0, last.idx);
+
+    state.i = pos;
+    state.showDef = false;
+    render();
+  };
+
+  document.getElementById("reset").onclick = () => {
+    state = freshState();
+    render();
+  };
+
+  // Optional: tap the card itself to flip (nice on mobile)
+  document.getElementById("card").onclick = () => {
+    if (state.activeIndices.length === 0) return;
+    state.showDef = !state.showDef;
+    render();
+  };
+
+  render();
+</script>
