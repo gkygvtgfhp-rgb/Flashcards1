@@ -13,23 +13,29 @@
   .hint { opacity:.75; font-style: italic; }
   .small { opacity:.7; font-size: 13px; margin-top: 10px; }
 
-  /* Resume modal */
-  .overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,.25);
-    display: none; align-items: center; justify-content: center;
-    padding: 18px;
-  }
-  .modal {
-    width: min(520px, 100%);
-    background: #fff;
+  /* Term strip */
+  .termstrip {
+    margin-top: 10px;
+    padding: 10px 12px;
     border: 1px solid #ddd;
-    border-radius: 16px;
-    padding: 16px;
+    border-radius: 14px;
+    line-height: 1.6;
+    font-size: 14px;
+    word-break: break-word;
   }
-  .modal h2 { font-size: 18px; margin: 0 0 8px; }
-  .modal p { margin: 8px 0; opacity: .8; }
-  .modal .row { margin: 12px 0 0; }
+  .termstrip a.term {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 8px;
+    padding: 2px 4px;
+  }
+  .termstrip a.term:hover { text-decoration: underline; }
+  .termstrip a.term.known { opacity: 0.35; }
+  .termstrip a.term.current {
+    font-weight: 800;
+    font-size: 16px; /* a few points bigger */
+  }
 </style>
 
 <div class="row">
@@ -53,12 +59,15 @@
 <div class="card" id="card"></div>
 <div class="small" id="deckInfo"></div>
 
+<!-- Term list (comma separated) -->
+<div class="termstrip" id="termStrip"></div>
+
 <!-- Resume prompt -->
-<div class="overlay" id="overlay">
-  <div class="modal">
-    <h2>Resume this deck?</h2>
-    <p id="resumeText"></p>
-    <div class="row">
+<div class="overlay" id="overlay" style="position:fixed; inset:0; background:rgba(0,0,0,.25); display:none; align-items:center; justify-content:center; padding:18px;">
+  <div style="width:min(520px, 100%); background:#fff; border:1px solid #ddd; border-radius:16px; padding:16px;">
+    <h2 style="font-size:18px; margin:0 0 8px;">Resume this deck?</h2>
+    <p id="resumeText" style="margin:8px 0; opacity:.8;"></p>
+    <div class="row" style="margin-top:12px;">
       <button id="resumeBtn">Resume</button>
       <button id="startOverBtn">Start over</button>
     </div>
@@ -104,47 +113,62 @@
 
     CARDS = cards;
     deckInfoEl.textContent = `${path} (${CARDS.length} cards)`;
-    return path; // stable identifier for storage
+    return path;
   }
 
-  // ---------------- Persistent state (localStorage) ----------------
-  const KEY_PREFIX = "flashcards_v7:";
+  // ---------------- Persistent state ----------------
+  const KEY_PREFIX = "flashcards_v9:";
 
   function makeKey(deckId) { return KEY_PREFIX + deckId; }
 
   function freshState() {
     return {
-      activeIndices: [...CARDS.keys()],
-      i: 0,
+      order: [...CARDS.keys()],
+      known: Array(CARDS.length).fill(false),
+      pos: 0,
       flipped: false,
-      frontMode: "term", // "term" | "def"
-      removed: []        // stack of {idx, pos}
+      frontMode: "term",
+      undo: []
     };
   }
 
-  function clamp(s) {
-    if (s.activeIndices.length === 0) { s.i = 0; return; }
-    s.i = Math.max(0, Math.min(s.i, s.activeIndices.length - 1));
+  function clampPos(s) {
+    if (s.order.length === 0) { s.pos = 0; return; }
+    s.pos = Math.max(0, Math.min(s.pos, s.order.length - 1));
+  }
+
+  function normalizeKnownArray(s) {
+    if (!Array.isArray(s.known) || s.known.length !== CARDS.length) {
+      const k = Array(CARDS.length).fill(false);
+      if (Array.isArray(s.known)) {
+        for (let i = 0; i < Math.min(s.known.length, k.length); i++) k[i] = !!s.known[i];
+      }
+      s.known = k;
+    } else {
+      s.known = s.known.map(v => !!v);
+    }
   }
 
   function loadState(key) {
     try {
       const s = JSON.parse(localStorage.getItem(key) || "null");
-      if (!s) return null; // IMPORTANT: return null to indicate "no saved progress"
-      if (!Array.isArray(s.activeIndices) || CARDS.length === 0) return null;
+      if (!s) return null;
 
       const max = CARDS.length - 1;
-      s.activeIndices = s.activeIndices.filter(n => Number.isInteger(n) && n >= 0 && n <= max);
+      if (!Array.isArray(s.order)) return null;
+      s.order = s.order.filter(n => Number.isInteger(n) && n >= 0 && n <= max);
+      if (!s.order.length) return null;
 
-      s.i = Number.isInteger(s.i) ? s.i : 0;
+      s.pos = Number.isInteger(s.pos) ? s.pos : 0;
       s.flipped = !!s.flipped;
       s.frontMode = (s.frontMode === "def") ? "def" : "term";
-      s.removed = Array.isArray(s.removed) ? s.removed : [];
 
-      s.removed = s.removed
-        .filter(r => r && Number.isInteger(r.idx) && r.idx >= 0 && r.idx <= max && Number.isInteger(r.pos) && r.pos >= 0);
+      normalizeKnownArray(s);
 
-      clamp(s);
+      s.undo = Array.isArray(s.undo) ? s.undo : [];
+      s.undo = s.undo.filter(u => u && Number.isInteger(u.idx) && u.idx >= 0 && u.idx <= max);
+
+      clampPos(s);
       return s;
     } catch {
       return null;
@@ -154,20 +178,47 @@
   function saveState(key, s) { localStorage.setItem(key, JSON.stringify(s)); }
   function clearState(key) { localStorage.removeItem(key); }
 
-  // ---------------- UI helpers ----------------
+  // ---------------- Helpers ----------------
+  function escapeHtml(str) {
+    return str.replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[c]));
+  }
+
+  function currentIndex() {
+    if (!state.order.length) return null;
+    return state.order[state.pos];
+  }
+
   function currentCard() {
-    if (state.activeIndices.length === 0) return null;
-    const idx = state.activeIndices[state.i];
+    const idx = currentIndex();
+    if (idx === null || idx === undefined) return null;
     return { idx, card: CARDS[idx] };
   }
 
   function frontText(card) { return state.frontMode === "term" ? card.term : card.def; }
   function backText(card)  { return state.frontMode === "term" ? card.def  : card.term; }
 
-  function escapeHtml(str) {
-    return str.replace(/[&<>"']/g, c => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-    }[c]));
+  function remainingCount() {
+    let r = 0;
+    for (let i = 0; i < state.known.length; i++) if (!state.known[i]) r++;
+    return r;
+  }
+
+  function knownCount() { return CARDS.length - remainingCount(); }
+
+  function stepNextUnknown(dir) {
+    if (!state.order.length) return;
+    const start = state.pos;
+    let p = state.pos;
+
+    while (true) {
+      p += dir;
+      if (p < 0 || p >= state.order.length) break;
+      const idx = state.order[p];
+      if (!state.known[idx]) { state.pos = p; return; }
+    }
+    state.pos = start;
   }
 
   function shuffleArray(arr) {
@@ -180,37 +231,69 @@
   // ---------------- App state ----------------
   let deckId = "unknown";
   let storageKey = makeKey(deckId);
-  let state = { activeIndices: [], i: 0, flipped: false, frontMode: "term", removed: [] };
+  let state = null;
 
-  function knownCount() {
-    return CARDS.length - state.activeIndices.length;
+  function renderTermStrip() {
+    const strip = document.getElementById("termStrip");
+    const curIdx = currentIndex();
+
+    const parts = state.order.map((idx, i) => {
+      const term = escapeHtml(CARDS[idx].term);
+      const classes = ["term"];
+      if (state.known[idx]) classes.push("known");
+      if (idx === curIdx) classes.push("current");
+
+      // data-pos lets us jump exactly to this position in the current order
+      return `<a class="${classes.join(" ")}" href="#" data-pos="${i}" title="Jump to: ${term}">${term}</a>`;
+    });
+
+    strip.innerHTML = parts.join(", ");
   }
 
   function render() {
     const c = currentCard();
-    const remaining = state.activeIndices.length;
     const total = CARDS.length;
+    const remaining = remainingCount();
 
     document.getElementById("status").textContent = `Remaining: ${remaining} / ${total}`;
     document.getElementById("knownPill").textContent = `Known: ${knownCount()}`;
     document.getElementById("mode").textContent = state.frontMode === "term" ? "Front: Term" : "Front: Definition";
 
-    document.getElementById("prev").disabled = remaining === 0 || state.i === 0;
-    document.getElementById("next").disabled = remaining === 0 || state.i === remaining - 1;
-    document.getElementById("flip").disabled = remaining === 0;
-    document.getElementById("know").disabled = remaining === 0;
-    document.getElementById("shuffle").disabled = remaining <= 1;
-    document.getElementById("undo").disabled = state.removed.length === 0;
+    const canNavigate = state.order.length > 0;
+    const allKnown = remaining === 0;
+
+    document.getElementById("flip").disabled = !canNavigate;
+    document.getElementById("shuffle").disabled = state.order.length <= 1;
+    document.getElementById("undo").disabled = state.undo.length === 0;
+
+    const cur = currentIndex();
+    document.getElementById("know").disabled = !canNavigate || allKnown || (cur !== null && state.known[cur]);
+    document.getElementById("prev").disabled = !canNavigate || allKnown;
+    document.getElementById("next").disabled = !canNavigate || allKnown;
 
     const el = document.getElementById("card");
     if (!c) {
       el.innerHTML = `
-        <div class="front">Deck cleared ✅</div>
-        <div class="hint">Hit <b>Reset</b> to start again, or <b>Undo</b> to bring one back.</div>
-        <div class="meta"></div>
+        <div class="front">No deck loaded</div>
+        <div class="hint">Check the URL has ?d=YOUR_FOLDER and that /decks/YOUR_FOLDER/deck.json exists.</div>
       `;
+      return;
+    }
+
+    if (allKnown) {
+      el.innerHTML = `
+        <div class="front">Deck cleared ✅</div>
+        <div class="hint">Everything is marked known. Hit <b>Reset</b> to start again, or <b>Undo</b> to bring one back.</div>
+      `;
+      renderTermStrip();
       saveState(storageKey, state);
       return;
+    }
+
+    // If current is known, advance to next unknown
+    if (state.known[c.idx]) {
+      stepNextUnknown(+1);
+      return render();
     }
 
     const show = state.flipped ? backText(c.card) : frontText(c.card);
@@ -219,11 +302,37 @@
     el.innerHTML = `
       <div class="front">${escapeHtml(show)}</div>
       ${state.flipped ? "" : hint}
-      <div class="meta">${state.i + 1}/${remaining}</div>
+      <div class="meta">${state.pos + 1}/${state.order.length}</div>
     `;
 
+    renderTermStrip();
     saveState(storageKey, state);
   }
+
+  // ---------------- Term strip click handler ----------------
+  // Event delegation: one handler for all term links
+  document.getElementById("termStrip").addEventListener("click", (e) => {
+    const a = e.target.closest("a.term");
+    if (!a) return;
+    e.preventDefault();
+
+    const pos = parseInt(a.dataset.pos, 10);
+    if (!Number.isInteger(pos)) return;
+
+    state.pos = Math.max(0, Math.min(pos, state.order.length - 1));
+    state.flipped = false;
+
+    // If user clicked a known term, hop to next unknown forward so it feels useful.
+    const idx = currentIndex();
+    if (idx !== null && state.known[idx] && remainingCount() > 0) {
+      stepNextUnknown(+1);
+    }
+
+    render();
+
+    // Optional: scroll card into view so tap on long strip doesn't leave you at bottom
+    document.getElementById("card").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
 
   // ---------------- Controls ----------------
   document.getElementById("flip").onclick = () => { state.flipped = !state.flipped; render(); };
@@ -236,43 +345,44 @@
 
   document.getElementById("next").onclick = () => {
     state.flipped = false;
-    state.i++;
-    clamp(state);
+    stepNextUnknown(+1);
     render();
   };
 
   document.getElementById("prev").onclick = () => {
     state.flipped = false;
-    state.i--;
-    clamp(state);
+    stepNextUnknown(-1);
     render();
   };
 
   document.getElementById("shuffle").onclick = () => {
-    shuffleArray(state.activeIndices);
-  
-    // start at beginning of the new randomized sequence
-    state.i = 0;
+    shuffleArray(state.order);
+    state.pos = 0;
     state.flipped = false;
-  
+    if (state.order.length && state.known[state.order[state.pos]]) stepNextUnknown(+1);
     render();
   };
 
   document.getElementById("know").onclick = () => {
-    const c = currentCard(); if (!c) return;
-    state.removed.push({ idx: c.idx, pos: state.i });
-    state.activeIndices.splice(state.i, 1);
+    const idx = currentIndex();
+    if (idx === null || state.known[idx]) return;
+
+    state.undo.push({ idx, prevKnown: false, prevPos: state.pos });
+    state.known[idx] = true;
+
     state.flipped = false;
-    clamp(state);
+    stepNextUnknown(+1);
     render();
   };
 
   document.getElementById("undo").onclick = () => {
-    const last = state.removed.pop(); if (!last) return;
-    const pos = Math.max(0, Math.min(last.pos, state.activeIndices.length));
-    state.activeIndices.splice(pos, 0, last.idx);
-    state.i = pos;
+    const last = state.undo.pop();
+    if (!last) return;
+
+    state.known[last.idx] = last.prevKnown;
+    state.pos = Math.max(0, Math.min(last.prevPos, state.order.length - 1));
     state.flipped = false;
+
     render();
   };
 
@@ -284,7 +394,7 @@
   };
 
   document.getElementById("card").onclick = () => {
-    if (state.activeIndices.length === 0) return;
+    if (!state || remainingCount() === 0) return;
     state.flipped = !state.flipped;
     render();
   };
@@ -293,16 +403,17 @@
   function showResumePrompt(savedState) {
     const overlay = document.getElementById("overlay");
     const resumeText = document.getElementById("resumeText");
-    const known = CARDS.length - savedState.activeIndices.length;
-    const remaining = savedState.activeIndices.length;
 
-    resumeText.textContent = `You previously marked ${known} known and have ${remaining} remaining in this deck.`;
+    let k = 0; for (let i = 0; i < savedState.known.length; i++) if (savedState.known[i]) k++;
+    const remaining = CARDS.length - k;
 
+    resumeText.textContent = `You previously marked ${k} known and have ${remaining} remaining in this deck.`;
     overlay.style.display = "flex";
 
     document.getElementById("resumeBtn").onclick = () => {
       state = savedState;
       overlay.style.display = "none";
+      if (remainingCount() > 0 && state.known[state.order[state.pos]]) stepNextUnknown(+1);
       render();
     };
 
@@ -325,17 +436,12 @@
 
     try {
       const path = await loadDeck(folder);
-      deckId = path;                 // e.g. decks/mlch1-3/deck.json
+      deckId = path;
       storageKey = makeKey(deckId);
 
       const saved = loadState(storageKey);
-      if (saved) {
-        // Don’t auto-resume—ask.
-        showResumePrompt(saved);
-      } else {
-        state = freshState();
-        render();
-      }
+      if (saved) showResumePrompt(saved);
+      else { state = freshState(); render(); }
 
     } catch (e) {
       deckInfoEl.textContent = "Error: " + e.message;
