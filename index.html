@@ -12,6 +12,7 @@
   .meta { opacity:.7; margin-top:10px; }
   .pill { padding:4px 10px; border-radius:999px; border:1px solid #ddd; }
   .hint { opacity:.75; font-style: italic; }
+  .small { opacity:.7; font-size: 13px; margin-top: 10px; }
 </style>
 
 <div class="row">
@@ -26,38 +27,93 @@
 </div>
 
 <div class="card" id="card"></div>
+<div class="small" id="deckInfo"></div>
 
 <script>
-  // ---- Terms & definitions (edit these) ----
-  const CARDS = [
-    { term: "Entropy (Shannon)", def: "Expected surprise: H(Y)=−∑ p(y)log p(y), measuring label uncertainty. Axiom: disorder is uncertainty." },
-    { term: "Information gain", def: "Expected reduction in entropy after splitting on a feature. Axiom: good questions reduce surprise." },
-    { term: "Bias–variance tradeoff", def: "Choosing complexity to balance systematic error vs sensitivity to noise. Axiom: you can’t minimize both for free." },
-    { term: "Gradient descent", def: "Iterative update w ← w − η∇L(w) to reduce loss. Axiom: intelligence-by-slope, not rule discovery." },
-    { term: "Version space", def: "Subset of hypotheses consistent with training data in the ideal. Axiom: data carves away possibilities." },
-    { term: "TD learning", def: "Update value estimates from the difference between successive predictions (bootstrapping). Axiom: learn from prediction-to-prediction error." },
+  // Fallback deck (used only if JSON load fails or no ?deck= provided)
+  let CARDS = [
+    { term: "Entropy (Shannon)", def: "Expected surprise: H(Y)=−∑ p(y)log p(y). Axiom: uncertainty is measurable." },
+    { term: "Information gain", def: "Expected reduction in entropy after a split. Axiom: good questions reduce surprise." },
   ];
 
-  const KEY = "flip_remove_flashcards_v2";
+  const KEY_PREFIX = "flashcards_v4:";
 
-  // frontMode: "term" means show term first; "def" means show definition first
-  const freshState = () => ({
-    activeIndices: [...CARDS.keys()],
-    i: 0,
-    flipped: false,    // false = showing front, true = showing back
-    frontMode: "term", // "term" | "def"
-    removed: []        // stack of {idx, pos}
-  });
+  // ---- Deck loading via query string: ?deck=deck1.json ----
+  function getDeckParam() {
+    const p = new URLSearchParams(location.search);
+    const deck = p.get("deck");
+    return deck && deck.trim() ? deck.trim() : null;
+  }
 
-  const load = () => {
+  function safeDeckName(deck) {
+    // Allow simple filenames like deck1.json or decks/deck1.json
+    // Block protocol, absolute URLs, and ".."
+    if (!deck) return "default";
+    if (deck.includes("://")) return "default";
+    if (deck.startsWith("/")) return "default";
+    if (deck.includes("..")) return "default";
+    if (!deck.toLowerCase().endsWith(".json")) return "default";
+    return deck;
+  }
+
+  async function loadDeckIfProvided() {
+    const deckParam = safeDeckName(getDeckParam());
+    const deckInfoEl = document.getElementById("deckInfo");
+
+    if (deckParam === "default") {
+      deckInfoEl.textContent = "Deck: built-in (use ?deck=deck1.json)";
+      return "default";
+    }
+
     try {
-      const s = JSON.parse(localStorage.getItem(KEY) || "null");
+      const res = await fetch(deckParam, { cache: "no-store" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+
+      if (!Array.isArray(data)) throw new Error("JSON must be an array");
+      const cards = data
+        .filter(x => x && typeof x.term === "string" && typeof x.def === "string")
+        .map(x => ({ term: x.term.trim(), def: x.def.trim() }))
+        .filter(x => x.term.length && x.def.length);
+
+      if (!cards.length) throw new Error("No valid {term, def} entries found");
+      CARDS = cards;
+
+      deckInfoEl.textContent = `Deck: ${deckParam} (${CARDS.length} cards)`;
+      return deckParam;
+    } catch (e) {
+      deckInfoEl.textContent = `Deck load failed for "${deckParam}". Using built-in deck. (${e.message})`;
+      return "default";
+    }
+  }
+
+  // ---- App state ----
+  function makeKey(deckName) { return KEY_PREFIX + deckName; }
+
+  // frontMode: "term" shows term first; "def" shows definition first
+  function freshState() {
+    return {
+      activeIndices: [...CARDS.keys()],
+      i: 0,
+      flipped: false,
+      frontMode: "term",
+      removed: []
+    };
+  }
+
+  function clamp(s) {
+    if (s.activeIndices.length === 0) { s.i = 0; return; }
+    s.i = Math.max(0, Math.min(s.i, s.activeIndices.length - 1));
+  }
+
+  function loadState(key) {
+    try {
+      const s = JSON.parse(localStorage.getItem(key) || "null");
       if (!s) return freshState();
       if (!Array.isArray(s.activeIndices) || CARDS.length === 0) return freshState();
 
       const max = CARDS.length - 1;
       s.activeIndices = s.activeIndices.filter(n => Number.isInteger(n) && n >= 0 && n <= max);
-
       s.i = Number.isInteger(s.i) ? s.i : 0;
       s.flipped = !!s.flipped;
       s.frontMode = (s.frontMode === "def") ? "def" : "term";
@@ -68,16 +124,13 @@
     } catch {
       return freshState();
     }
-  };
-
-  const save = (s) => localStorage.setItem(KEY, JSON.stringify(s));
-
-  function clamp(s) {
-    if (s.activeIndices.length === 0) { s.i = 0; return; }
-    s.i = Math.max(0, Math.min(s.i, s.activeIndices.length - 1));
   }
 
-  let state = load();
+  function saveState(key, s) { localStorage.setItem(key, JSON.stringify(s)); }
+
+  // ---- UI helpers ----
+  function frontText(card) { return state.frontMode === "term" ? card.term : card.def; }
+  function backText(card)  { return state.frontMode === "term" ? card.def  : card.term; }
 
   function currentCard() {
     if (state.activeIndices.length === 0) return null;
@@ -85,12 +138,9 @@
     return { idx, card: CARDS[idx] };
   }
 
-  function frontText(card) {
-    return state.frontMode === "term" ? card.term : card.def;
-  }
-  function backText(card) {
-    return state.frontMode === "term" ? card.def : card.term;
-  }
+  let deckName = "default";
+  let storageKey = makeKey(deckName);
+  let state = freshState();
 
   function render() {
     const c = currentCard();
@@ -98,9 +148,7 @@
     const total = CARDS.length;
 
     document.getElementById("status").textContent = `Remaining: ${remaining} / ${total}`;
-
-    document.getElementById("mode").textContent =
-      state.frontMode === "term" ? "Front: Term" : "Front: Definition";
+    document.getElementById("mode").textContent = state.frontMode === "term" ? "Front: Term" : "Front: Definition";
 
     document.getElementById("prev").disabled = remaining === 0 || state.i === 0;
     document.getElementById("next").disabled = remaining === 0 || state.i === remaining - 1;
@@ -115,28 +163,26 @@
         <div class="back">You removed every card. Hit <b>Reset</b> to start again, or <b>Undo</b> to bring one back.</div>
         <div class="meta"></div>
       `;
-      save(state);
+      saveState(storageKey, state);
       return;
     }
 
     const show = state.flipped ? backText(c.card) : frontText(c.card);
     const hint = state.flipped ? "" : `<div class="hint">(tap Flip to reveal)</div>`;
 
-    // Important: in definition-first mode, the term is NOT shown until flipped (and vice versa).
     el.innerHTML = `
       <div class="front">${show}</div>
       ${state.flipped ? "" : hint}
       <div class="meta">${state.i + 1}/${remaining}</div>
     `;
 
-    save(state);
+    saveState(storageKey, state);
   }
 
   // Controls
   document.getElementById("flip").onclick = () => { state.flipped = !state.flipped; render(); };
 
   document.getElementById("mode").onclick = () => {
-    // Switch which side is the front. Always reset to showing the front after toggling.
     state.frontMode = (state.frontMode === "term") ? "def" : "term";
     state.flipped = false;
     render();
@@ -159,10 +205,8 @@
   document.getElementById("know").onclick = () => {
     const c = currentCard();
     if (!c) return;
-
     state.removed.push({ idx: c.idx, pos: state.i });
     state.activeIndices.splice(state.i, 1);
-
     state.flipped = false;
     clamp(state);
     render();
@@ -171,10 +215,8 @@
   document.getElementById("undo").onclick = () => {
     const last = state.removed.pop();
     if (!last) return;
-
     const pos = Math.max(0, Math.min(last.pos, state.activeIndices.length));
     state.activeIndices.splice(pos, 0, last.idx);
-
     state.i = pos;
     state.flipped = false;
     render();
@@ -185,12 +227,16 @@
     render();
   };
 
-  // Tap card itself to flip (mobile-friendly)
   document.getElementById("card").onclick = () => {
     if (state.activeIndices.length === 0) return;
     state.flipped = !state.flipped;
     render();
   };
 
-  render();
+  (async function init() {
+    deckName = await loadDeckIfProvided();
+    storageKey = makeKey(deckName);
+    state = loadState(storageKey);
+    render();
+  })();
 </script>
