@@ -7,13 +7,15 @@
   button { padding:10px 12px; border-radius:10px; border:1px solid #ccc; background:#fff; }
   button:disabled { opacity: .45; }
   .card { border:1px solid #ccc; border-radius:14px; padding:18px; min-height:180px; }
-  .term { font-size: 22px; font-weight:700; margin-bottom:10px; }
-  .def  { font-size: 18px; line-height:1.35; }
+  .front { font-size: 22px; font-weight:700; margin-bottom:10px; }
+  .back  { font-size: 18px; line-height:1.35; }
   .meta { opacity:.7; margin-top:10px; }
   .pill { padding:4px 10px; border-radius:999px; border:1px solid #ddd; }
+  .hint { opacity:.75; font-style: italic; }
 </style>
 
 <div class="row">
+  <button id="mode">Front: Term</button>
   <button id="flip">Flip</button>
   <button id="prev">◀︎ Prev</button>
   <button id="next">Next ▶︎</button>
@@ -26,86 +28,25 @@
 <div class="card" id="card"></div>
 
 <script>
-  // ---- Terms & definitions (expand freely) ----
+  // ---- Terms & definitions (edit these) ----
   const CARDS = [
-    // --- Learning as search / structure ---
-    { term: "Learning (operational)", def: "Optimization over a restricted hypothesis space to reduce loss on observed data. Axiom: learning drifts toward consistency, not truth." },
-    { term: "Learning as structured search", def: "View learning as exploring a constrained space of models using feedback from data. Axiom: structure determines what can be found." },
-    { term: "Inductive bias", def: "Assumptions that prefer some hypotheses over others (architecture, priors, regularization). Axiom: no bias, no generalization." },
-    { term: "Projection (learning)", def: "Mapping an infinite/unknown reality onto a limited model class and finite data. Axiom: every model is a shadow on a chosen wall." },
-    { term: "Objective function (loss)", def: "A scalar score the learner minimizes (error + maybe regularization). Axiom: you get what you measure." },
-    { term: "Constraint", def: "A restriction on parameters/functions that shrinks the search space. Axiom: constraints buy generalization at the cost of flexibility." },
-
-    // --- Hypothesis / version spaces ---
-    { term: "Hypothesis space (H)", def: "The set of all models the learner is allowed to consider. Axiom: H is the universe of possible explanations." },
-    { term: "Version space", def: "Subset of H consistent with the training data (in the noise-free ideal). Axiom: data carves away possibilities." },
-    { term: "Consistent hypothesis", def: "A hypothesis that matches all training labels under the training assumptions. Axiom: consistency is not correctness." },
-    { term: "Underdetermination", def: "Many hypotheses can fit the same finite data. Axiom: data alone rarely pins down the world." },
-
-    // --- Generalization & convergence ---
-    { term: "Generalization", def: "Performance on unseen samples from the same underlying process. Axiom: the goal is future behavior, not past perfection." },
-    { term: "Overfitting", def: "Fitting noise/idiosyncrasies so test performance worsens. Axiom: memorization masquerades as skill." },
-    { term: "Underfitting", def: "Model too constrained to capture signal, high error even on train. Axiom: too-simple maps miss real terrain." },
-    { term: "Convergence (optimization)", def: "Parameters approach a local/global minimum of the loss under an update rule. Axiom: repeated small steps can stabilize." },
-    { term: "Convergence (statistical)", def: "Learned function approaches the best-in-class predictor as data grows (under assumptions). Axiom: more data tightens the projection." },
-
-    // --- Bias–variance / uncertainty framing ---
-    { term: "Bias", def: "Systematic error from restrictive assumptions (model misspecification). Axiom: bias is the price of structure." },
-    { term: "Variance", def: "Sensitivity of the learned model to sampling noise in data. Axiom: variance is the price of flexibility." },
-    { term: "Bias–variance tradeoff", def: "Choosing complexity to balance systematic error vs sensitivity to noise. Axiom: you can’t minimize both for free." },
-    { term: "Noise", def: "Unpredictable variation in observations/labels not explained by features. Axiom: noise shifts likelihoods, not logic." },
-
-    // --- Geometry/optimization intuition ---
-    { term: "Gradient", def: "Direction of steepest increase of a function; descent follows negative gradient. Axiom: local slope guides local change." },
-    { term: "Gradient descent", def: "Iterative update w ← w − η∇L(w) to reduce loss. Axiom: intelligence-by-slope, not rule discovery." },
-    { term: "Learning rate (η)", def: "Step size in parameter updates controlling stability vs speed. Axiom: too big diverges; too small crawls." },
-    { term: "Local minimum", def: "A point where small perturbations increase loss though better points may exist elsewhere. Axiom: local geometry can trap you." },
-    { term: "Loss landscape", def: "The loss as a function over parameters; defines valleys/ridges. Axiom: training is navigation." },
-    { term: "Regularization", def: "Penalty/constraint that discourages complexity (e.g., L2) to improve generalization. Axiom: prefer simpler explanations inside H." },
-
-    // --- Deduction vs probability framing ---
-    { term: "Deduction (set logic)", def: "Reasoning in/out with strict consistency; contradictions are fatal. Axiom: sets snap; they don’t bend." },
-    { term: "Probability (measure)", def: "Reasoning by mass/likelihood; noise shifts weights instead of breaking truth-values. Axiom: measures degrade gracefully." },
-    { term: "Graceful degradation", def: "Performance declines smoothly as noise increases, rather than collapsing. Axiom: likelihoods soften contradictions." },
-
-    // --- Decision trees / information theory ---
     { term: "Entropy (Shannon)", def: "Expected surprise: H(Y)=−∑ p(y)log p(y), measuring label uncertainty. Axiom: disorder is uncertainty." },
     { term: "Information gain", def: "Expected reduction in entropy after splitting on a feature. Axiom: good questions reduce surprise." },
-    { term: "Mutual information", def: "Shared information between variables: how much knowing X reduces uncertainty about Y. Axiom: dependence is predictability." },
-    { term: "Decision tree", def: "A model that organizes distinctions via splits to predict labels. Axiom: trees are about separations, not deep laws." },
-    { term: "Compressibility view of learning", def: "Prefer splits/models that encode labels with fewer bits given features. Axiom: learning seeks shorter descriptions." },
-
-    // --- LMS / TD / RL-ish concepts (from your checkers thread) ---
-    { term: "LMS (Least Mean Squares)", def: "Stochastic gradient method minimizing mean squared error using incremental updates. Axiom: adjust weights in proportion to error." },
-    { term: "TD learning (Temporal Difference)", def: "Update value estimates from the difference between successive predictions (bootstrapping). Axiom: learn from prediction-to-prediction error." },
-    { term: "TD error (δ)", def: "δ = r + γV(s') − V(s); surprise between predicted and observed returns. Axiom: surprise is the teaching signal." },
-    { term: "Bootstrapping", def: "Using one estimate (next state value) to update another (current state value). Axiom: the learner teaches itself." },
-    { term: "Value function", def: "Expected future return from a state (or state-action) under a policy. Axiom: value is discounted destiny." },
-    { term: "Policy", def: "A mapping from states to actions (or distributions over actions). Axiom: policy is behavior." },
-    { term: "Reward", def: "Scalar feedback signal defining the goal in RL. Axiom: reward defines meaning for the agent." },
-    { term: "Discount factor (γ)", def: "Weights future rewards vs immediate ones; γ near 1 values the long run. Axiom: patience is a parameter." },
-
-    // --- Search / state-space language (your “what happens next?” thread) ---
-    { term: "State", def: "A representation containing enough information to predict future evolution given actions. Axiom: state is a compression of history." },
-    { term: "Transition (next state)", def: "Rule/dynamics mapping (state, action) → successor state. Axiom: dynamics are the world-model." },
-    { term: "Trajectory", def: "A sequence of states over time under actions and dynamics. Axiom: life is a path in state-space." },
-
-    // --- Model capacity / complexity ---
-    { term: "Capacity", def: "A model class’s ability to fit a wide range of functions (degrees of freedom). Axiom: capacity is expressive power." },
-    { term: "Occam bias", def: "Preference for simpler hypotheses among those that fit data. Axiom: simplest survivor wins (inside your assumptions)." },
-
-    // --- Extra anchors you’ve been circling philosophically ---
-    { term: "Incompleteness (Gödel lens)", def: "Any sufficiently expressive formal system has true statements unprovable within it. Axiom: no single map captures all truths." },
-    { term: "Consistency (system property)", def: "No contradictions can be derived within a formal system. Axiom: consistency is survival for formal worlds." },
+    { term: "Bias–variance tradeoff", def: "Choosing complexity to balance systematic error vs sensitivity to noise. Axiom: you can’t minimize both for free." },
+    { term: "Gradient descent", def: "Iterative update w ← w − η∇L(w) to reduce loss. Axiom: intelligence-by-slope, not rule discovery." },
+    { term: "Version space", def: "Subset of hypotheses consistent with training data in the ideal. Axiom: data carves away possibilities." },
+    { term: "TD learning", def: "Update value estimates from the difference between successive predictions (bootstrapping). Axiom: learn from prediction-to-prediction error." },
   ];
 
-  const KEY = "flip_remove_flashcards_v1";
+  const KEY = "flip_remove_flashcards_v2";
 
+  // frontMode: "term" means show term first; "def" means show definition first
   const freshState = () => ({
     activeIndices: [...CARDS.keys()],
     i: 0,
-    showDef: false,
-    removed: [] // stack of {idx, pos}
+    flipped: false,    // false = showing front, true = showing back
+    frontMode: "term", // "term" | "def"
+    removed: []        // stack of {idx, pos}
   });
 
   const load = () => {
@@ -113,11 +54,15 @@
       const s = JSON.parse(localStorage.getItem(KEY) || "null");
       if (!s) return freshState();
       if (!Array.isArray(s.activeIndices) || CARDS.length === 0) return freshState();
+
       const max = CARDS.length - 1;
       s.activeIndices = s.activeIndices.filter(n => Number.isInteger(n) && n >= 0 && n <= max);
+
       s.i = Number.isInteger(s.i) ? s.i : 0;
-      s.showDef = !!s.showDef;
+      s.flipped = !!s.flipped;
+      s.frontMode = (s.frontMode === "def") ? "def" : "term";
       s.removed = Array.isArray(s.removed) ? s.removed : [];
+
       clamp(s);
       return s;
     } catch {
@@ -140,12 +85,23 @@
     return { idx, card: CARDS[idx] };
   }
 
+  function frontText(card) {
+    return state.frontMode === "term" ? card.term : card.def;
+  }
+  function backText(card) {
+    return state.frontMode === "term" ? card.def : card.term;
+  }
+
   function render() {
     const c = currentCard();
     const remaining = state.activeIndices.length;
     const total = CARDS.length;
 
     document.getElementById("status").textContent = `Remaining: ${remaining} / ${total}`;
+
+    document.getElementById("mode").textContent =
+      state.frontMode === "term" ? "Front: Term" : "Front: Definition";
+
     document.getElementById("prev").disabled = remaining === 0 || state.i === 0;
     document.getElementById("next").disabled = remaining === 0 || state.i === remaining - 1;
     document.getElementById("flip").disabled = remaining === 0;
@@ -155,34 +111,46 @@
     const el = document.getElementById("card");
     if (!c) {
       el.innerHTML = `
-        <div class="term">Deck cleared ✅</div>
-        <div class="def">You removed every card. Hit <b>Reset</b> to start again, or <b>Undo</b> to bring one back.</div>
+        <div class="front">Deck cleared ✅</div>
+        <div class="back">You removed every card. Hit <b>Reset</b> to start again, or <b>Undo</b> to bring one back.</div>
         <div class="meta"></div>
       `;
       save(state);
       return;
     }
 
+    const show = state.flipped ? backText(c.card) : frontText(c.card);
+    const hint = state.flipped ? "" : `<div class="hint">(tap Flip to reveal)</div>`;
+
+    // Important: in definition-first mode, the term is NOT shown until flipped (and vice versa).
     el.innerHTML = `
-      <div class="term">${c.card.term}</div>
-      <div class="def">${state.showDef ? c.card.def : "<em>(tap Flip to reveal)</em>"}</div>
+      <div class="front">${show}</div>
+      ${state.flipped ? "" : hint}
       <div class="meta">${state.i + 1}/${remaining}</div>
     `;
 
     save(state);
   }
 
-  document.getElementById("flip").onclick = () => { state.showDef = !state.showDef; render(); };
+  // Controls
+  document.getElementById("flip").onclick = () => { state.flipped = !state.flipped; render(); };
+
+  document.getElementById("mode").onclick = () => {
+    // Switch which side is the front. Always reset to showing the front after toggling.
+    state.frontMode = (state.frontMode === "term") ? "def" : "term";
+    state.flipped = false;
+    render();
+  };
 
   document.getElementById("next").onclick = () => {
-    state.showDef = false;
+    state.flipped = false;
     state.i++;
     clamp(state);
     render();
   };
 
   document.getElementById("prev").onclick = () => {
-    state.showDef = false;
+    state.flipped = false;
     state.i--;
     clamp(state);
     render();
@@ -195,7 +163,7 @@
     state.removed.push({ idx: c.idx, pos: state.i });
     state.activeIndices.splice(state.i, 1);
 
-    state.showDef = false;
+    state.flipped = false;
     clamp(state);
     render();
   };
@@ -208,7 +176,7 @@
     state.activeIndices.splice(pos, 0, last.idx);
 
     state.i = pos;
-    state.showDef = false;
+    state.flipped = false;
     render();
   };
 
@@ -217,10 +185,10 @@
     render();
   };
 
-  // Tap card to flip (nice on mobile)
+  // Tap card itself to flip (mobile-friendly)
   document.getElementById("card").onclick = () => {
     if (state.activeIndices.length === 0) return;
-    state.showDef = !state.showDef;
+    state.flipped = !state.flipped;
     render();
   };
 
