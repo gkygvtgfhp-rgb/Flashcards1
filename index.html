@@ -1,242 +1,71 @@
 <!doctype html>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Flashcards</title>
+<title>Flashcards — Decks</title>
 <style>
   body { font: 16px -apple-system, system-ui, sans-serif; margin: 18px; }
-  .row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px; align-items:center; }
-  button { padding:10px 12px; border-radius:10px; border:1px solid #ccc; background:#fff; }
-  button:disabled { opacity: .45; }
-  .card { border:1px solid #ccc; border-radius:14px; padding:18px; min-height:180px; }
-  .front { font-size: 22px; font-weight:700; margin-bottom:10px; }
-  .back  { font-size: 18px; line-height:1.35; }
-  .meta { opacity:.7; margin-top:10px; }
-  .pill { padding:4px 10px; border-radius:999px; border:1px solid #ddd; }
-  .hint { opacity:.75; font-style: italic; }
-  .small { opacity:.7; font-size: 13px; margin-top: 10px; }
+  h1 { font-size: 22px; margin: 0 0 10px; }
+  .sub { opacity:.7; margin: 0 0 14px; }
+  .deck { display:block; padding:14px 14px; border:1px solid #ccc; border-radius:14px; text-decoration:none; color:inherit; margin: 10px 0; }
+  .name { font-weight:700; font-size:18px; }
+  .desc { opacity:.75; margin-top:6px; }
+  .pill { display:inline-block; padding:4px 10px; border-radius:999px; border:1px solid #ddd; opacity:.8; font-size:12px; margin-top:10px; }
 </style>
 
-<div class="row">
-  <button id="mode">Front: Term</button>
-  <button id="flip">Flip</button>
-  <button id="prev">◀︎ Prev</button>
-  <button id="next">Next ▶︎</button>
-  <button id="know">Know it ✓ (remove)</button>
-  <button id="undo">Undo</button>
-  <button id="reset">Reset</button>
-  <span class="pill" id="status"></span>
-</div>
+<h1>Decks</h1>
+<p class="sub">Tap a deck to start. (Progress is saved per deck on this device.)</p>
 
-<div class="card" id="card"></div>
-<div class="small" id="deckInfo"></div>
+<div id="list"></div>
+<p id="err" class="sub"></p>
 
 <script>
-  // Fallback deck (used only if JSON load fails or no ?deck= provided)
-  let CARDS = [
-    { term: "Entropy (Shannon)", def: "Expected surprise: H(Y)=−∑ p(y)log p(y). Axiom: uncertainty is measurable." },
-    { term: "Information gain", def: "Expected reduction in entropy after a split. Axiom: good questions reduce surprise." },
-  ];
-
-  const KEY_PREFIX = "flashcards_v4:";
-
-  // ---- Deck loading via query string: ?deck=deck1.json ----
-  function getDeckParam() {
-    const p = new URLSearchParams(location.search);
-    const deck = p.get("deck");
-    return deck && deck.trim() ? deck.trim() : null;
-  }
-
-  function safeDeckName(deck) {
-    // Allow simple filenames like deck1.json or decks/deck1.json
-    // Block protocol, absolute URLs, and ".."
-    if (!deck) return "default";
-    if (deck.includes("://")) return "default";
-    if (deck.startsWith("/")) return "default";
-    if (deck.includes("..")) return "default";
-    if (!deck.toLowerCase().endsWith(".json")) return "default";
-    return deck;
-  }
-
-  async function loadDeckIfProvided() {
-    const deckParam = safeDeckName(getDeckParam());
-    const deckInfoEl = document.getElementById("deckInfo");
-
-    if (deckParam === "default") {
-      deckInfoEl.textContent = "Deck: built-in (use ?deck=deck1.json)";
-      return "default";
-    }
+  // Loads /decks/index.json and renders links to flashcard.html?d=<folder>
+  async function loadDeckIndex() {
+    const list = document.getElementById("list");
+    const err = document.getElementById("err");
 
     try {
-      const res = await fetch(deckParam, { cache: "no-store" });
+      const res = await fetch("decks/index.json", { cache: "no-store" });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
 
-      if (!Array.isArray(data)) throw new Error("JSON must be an array");
-      const cards = data
-        .filter(x => x && typeof x.term === "string" && typeof x.def === "string")
-        .map(x => ({ term: x.term.trim(), def: x.def.trim() }))
-        .filter(x => x.term.length && x.def.length);
+      if (!Array.isArray(data)) throw new Error("decks/index.json must be an array");
 
-      if (!cards.length) throw new Error("No valid {term, def} entries found");
-      CARDS = cards;
+      // Validate folder names: alphanumeric + underscore + dash only
+      const okName = (s) => /^[A-Za-z0-9_-]+$/.test(s);
 
-      deckInfoEl.textContent = `Deck: ${deckParam} (${CARDS.length} cards)`;
-      return deckParam;
+      const decks = data.filter(d =>
+        d && typeof d.folder === "string" && okName(d.folder) &&
+        typeof d.title === "string" && d.title.trim().length
+      );
+
+      if (!decks.length) {
+        err.textContent = "No decks found in decks/index.json.";
+        return;
+      }
+
+      list.innerHTML = decks.map(d => {
+        const title = escapeHtml(d.title.trim());
+        const desc  = d.desc ? escapeHtml(String(d.desc)) : "";
+        const count = d.count ? `<div class="pill">${escapeHtml(String(d.count))} cards</div>` : "";
+        return `
+          <a class="deck" href="flashcard.html?d=${encodeURIComponent(d.folder)}">
+            <div class="name">${title}</div>
+            ${desc ? `<div class="desc">${desc}</div>` : ""}
+            ${count}
+          </a>
+        `;
+      }).join("");
+
     } catch (e) {
-      deckInfoEl.textContent = `Deck load failed for "${deckParam}". Using built-in deck. (${e.message})`;
-      return "default";
+      err.textContent = "Could not load decks/index.json: " + e.message;
     }
   }
 
-  // ---- App state ----
-  function makeKey(deckName) { return KEY_PREFIX + deckName; }
-
-  // frontMode: "term" shows term first; "def" shows definition first
-  function freshState() {
-    return {
-      activeIndices: [...CARDS.keys()],
-      i: 0,
-      flipped: false,
-      frontMode: "term",
-      removed: []
-    };
+  function escapeHtml(str) {
+    return str.replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[c]));
   }
 
-  function clamp(s) {
-    if (s.activeIndices.length === 0) { s.i = 0; return; }
-    s.i = Math.max(0, Math.min(s.i, s.activeIndices.length - 1));
-  }
-
-  function loadState(key) {
-    try {
-      const s = JSON.parse(localStorage.getItem(key) || "null");
-      if (!s) return freshState();
-      if (!Array.isArray(s.activeIndices) || CARDS.length === 0) return freshState();
-
-      const max = CARDS.length - 1;
-      s.activeIndices = s.activeIndices.filter(n => Number.isInteger(n) && n >= 0 && n <= max);
-      s.i = Number.isInteger(s.i) ? s.i : 0;
-      s.flipped = !!s.flipped;
-      s.frontMode = (s.frontMode === "def") ? "def" : "term";
-      s.removed = Array.isArray(s.removed) ? s.removed : [];
-
-      clamp(s);
-      return s;
-    } catch {
-      return freshState();
-    }
-  }
-
-  function saveState(key, s) { localStorage.setItem(key, JSON.stringify(s)); }
-
-  // ---- UI helpers ----
-  function frontText(card) { return state.frontMode === "term" ? card.term : card.def; }
-  function backText(card)  { return state.frontMode === "term" ? card.def  : card.term; }
-
-  function currentCard() {
-    if (state.activeIndices.length === 0) return null;
-    const idx = state.activeIndices[state.i];
-    return { idx, card: CARDS[idx] };
-  }
-
-  let deckName = "default";
-  let storageKey = makeKey(deckName);
-  let state = freshState();
-
-  function render() {
-    const c = currentCard();
-    const remaining = state.activeIndices.length;
-    const total = CARDS.length;
-
-    document.getElementById("status").textContent = `Remaining: ${remaining} / ${total}`;
-    document.getElementById("mode").textContent = state.frontMode === "term" ? "Front: Term" : "Front: Definition";
-
-    document.getElementById("prev").disabled = remaining === 0 || state.i === 0;
-    document.getElementById("next").disabled = remaining === 0 || state.i === remaining - 1;
-    document.getElementById("flip").disabled = remaining === 0;
-    document.getElementById("know").disabled = remaining === 0;
-    document.getElementById("undo").disabled = state.removed.length === 0;
-
-    const el = document.getElementById("card");
-    if (!c) {
-      el.innerHTML = `
-        <div class="front">Deck cleared ✅</div>
-        <div class="back">You removed every card. Hit <b>Reset</b> to start again, or <b>Undo</b> to bring one back.</div>
-        <div class="meta"></div>
-      `;
-      saveState(storageKey, state);
-      return;
-    }
-
-    const show = state.flipped ? backText(c.card) : frontText(c.card);
-    const hint = state.flipped ? "" : `<div class="hint">(tap Flip to reveal)</div>`;
-
-    el.innerHTML = `
-      <div class="front">${show}</div>
-      ${state.flipped ? "" : hint}
-      <div class="meta">${state.i + 1}/${remaining}</div>
-    `;
-
-    saveState(storageKey, state);
-  }
-
-  // Controls
-  document.getElementById("flip").onclick = () => { state.flipped = !state.flipped; render(); };
-
-  document.getElementById("mode").onclick = () => {
-    state.frontMode = (state.frontMode === "term") ? "def" : "term";
-    state.flipped = false;
-    render();
-  };
-
-  document.getElementById("next").onclick = () => {
-    state.flipped = false;
-    state.i++;
-    clamp(state);
-    render();
-  };
-
-  document.getElementById("prev").onclick = () => {
-    state.flipped = false;
-    state.i--;
-    clamp(state);
-    render();
-  };
-
-  document.getElementById("know").onclick = () => {
-    const c = currentCard();
-    if (!c) return;
-    state.removed.push({ idx: c.idx, pos: state.i });
-    state.activeIndices.splice(state.i, 1);
-    state.flipped = false;
-    clamp(state);
-    render();
-  };
-
-  document.getElementById("undo").onclick = () => {
-    const last = state.removed.pop();
-    if (!last) return;
-    const pos = Math.max(0, Math.min(last.pos, state.activeIndices.length));
-    state.activeIndices.splice(pos, 0, last.idx);
-    state.i = pos;
-    state.flipped = false;
-    render();
-  };
-
-  document.getElementById("reset").onclick = () => {
-    state = freshState();
-    render();
-  };
-
-  document.getElementById("card").onclick = () => {
-    if (state.activeIndices.length === 0) return;
-    state.flipped = !state.flipped;
-    render();
-  };
-
-  (async function init() {
-    deckName = await loadDeckIfProvided();
-    storageKey = makeKey(deckName);
-    state = loadState(storageKey);
-    render();
-  })();
+  loadDeckIndex();
 </script>
