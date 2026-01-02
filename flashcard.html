@@ -1,0 +1,225 @@
+<!doctype html>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Flashcards</title>
+<style>
+  body { font: 16px -apple-system, system-ui, sans-serif; margin: 18px; }
+  .row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px; align-items:center; }
+  button, a.btn { padding:10px 12px; border-radius:10px; border:1px solid #ccc; background:#fff; color:inherit; text-decoration:none; display:inline-block; }
+  button:disabled { opacity: .45; }
+  .card { border:1px solid #ccc; border-radius:14px; padding:18px; min-height:180px; }
+  .front { font-size: 22px; font-weight:700; margin-bottom:10px; }
+  .meta { opacity:.7; margin-top:10px; }
+  .pill { padding:4px 10px; border-radius:999px; border:1px solid #ddd; }
+  .hint { opacity:.75; font-style: italic; }
+  .small { opacity:.7; font-size: 13px; margin-top: 10px; }
+</style>
+
+<div class="row">
+  <a class="btn" href="index.html">← Decks</a>
+  <span class="pill" id="deckTag">Deck: …</span>
+</div>
+
+<div class="row">
+  <button id="mode">Front: Term</button>
+  <button id="flip">Flip</button>
+  <button id="prev">◀︎ Prev</button>
+  <button id="next">Next ▶︎</button>
+  <button id="know">Know it ✓ (remove)</button>
+  <button id="undo">Undo</button>
+  <button id="reset">Reset</button>
+  <span class="pill" id="status"></span>
+</div>
+
+<div class="card" id="card"></div>
+<div class="small" id="deckInfo"></div>
+
+<script>
+  let CARDS = [];
+
+  const KEY_PREFIX = "flashcards_v5:";
+
+  function getFolderParam() {
+    const p = new URLSearchParams(location.search);
+    const d = p.get("d");
+    return d && d.trim() ? d.trim() : null;
+  }
+
+  function safeFolderName(folder) {
+    // only allow alphanumeric, underscore, dash
+    if (!folder) return null;
+    if (!/^[A-Za-z0-9_-]+$/.test(folder)) return null;
+    return folder;
+  }
+
+  async function loadDeck(folder) {
+    const deckInfoEl = document.getElementById("deckInfo");
+    const deckTag = document.getElementById("deckTag");
+
+    deckTag.textContent = folder ? `Deck: ${folder}` : "Deck: (missing)";
+    if (!folder) throw new Error("Missing ?d= folder name");
+
+    const path = `decks/${folder}/deck.json`;
+    const res = await fetch(path, { cache: "no-store" });
+    if (!res.ok) throw new Error(`Failed to load ${path} (HTTP ${res.status})`);
+
+    const data = await res.json();
+    if (!Array.isArray(data)) throw new Error("deck.json must be an array of {term, def}");
+
+    const cards = data
+      .filter(x => x && typeof x.term === "string" && typeof x.def === "string")
+      .map(x => ({ term: x.term.trim(), def: x.def.trim() }))
+      .filter(x => x.term.length && x.def.length);
+
+    if (!cards.length) throw new Error("No valid cards found in deck.json");
+
+    CARDS = cards;
+    deckInfoEl.textContent = `${path} (${CARDS.length} cards)`;
+    return path; // used for storage key
+  }
+
+  function makeKey(deckId) { return KEY_PREFIX + deckId; }
+
+  function freshState() {
+    return {
+      activeIndices: [...CARDS.keys()],
+      i: 0,
+      flipped: false,
+      frontMode: "term", // "term" or "def"
+      removed: []
+    };
+  }
+
+  function clamp(s) {
+    if (s.activeIndices.length === 0) { s.i = 0; return; }
+    s.i = Math.max(0, Math.min(s.i, s.activeIndices.length - 1));
+  }
+
+  function loadState(key) {
+    try {
+      const s = JSON.parse(localStorage.getItem(key) || "null");
+      if (!s) return freshState();
+      if (!Array.isArray(s.activeIndices) || CARDS.length === 0) return freshState();
+
+      const max = CARDS.length - 1;
+      s.activeIndices = s.activeIndices.filter(n => Number.isInteger(n) && n >= 0 && n <= max);
+      s.i = Number.isInteger(s.i) ? s.i : 0;
+      s.flipped = !!s.flipped;
+      s.frontMode = (s.frontMode === "def") ? "def" : "term";
+      s.removed = Array.isArray(s.removed) ? s.removed : [];
+
+      clamp(s);
+      return s;
+    } catch {
+      return freshState();
+    }
+  }
+
+  function saveState(key, s) { localStorage.setItem(key, JSON.stringify(s)); }
+
+  function currentCard() {
+    if (state.activeIndices.length === 0) return null;
+    const idx = state.activeIndices[state.i];
+    return { idx, card: CARDS[idx] };
+  }
+
+  function frontText(card) { return state.frontMode === "term" ? card.term : card.def; }
+  function backText(card)  { return state.frontMode === "term" ? card.def  : card.term; }
+
+  let deckId = "unknown";
+  let storageKey = makeKey(deckId);
+  let state = { activeIndices: [], i: 0, flipped: false, frontMode: "term", removed: [] };
+
+  function render() {
+    const c = currentCard();
+    const remaining = state.activeIndices.length;
+    const total = CARDS.length;
+
+    document.getElementById("status").textContent = `Remaining: ${remaining} / ${total}`;
+    document.getElementById("mode").textContent = state.frontMode === "term" ? "Front: Term" : "Front: Definition";
+
+    document.getElementById("prev").disabled = remaining === 0 || state.i === 0;
+    document.getElementById("next").disabled = remaining === 0 || state.i === remaining - 1;
+    document.getElementById("flip").disabled = remaining === 0;
+    document.getElementById("know").disabled = remaining === 0;
+    document.getElementById("undo").disabled = state.removed.length === 0;
+
+    const el = document.getElementById("card");
+    if (!c) {
+      el.innerHTML = `
+        <div class="front">Deck cleared ✅</div>
+        <div class="hint">Hit <b>Reset</b> to start again, or <b>Undo</b> to bring one back.</div>
+        <div class="meta"></div>
+      `;
+      saveState(storageKey, state);
+      return;
+    }
+
+    const show = state.flipped ? backText(c.card) : frontText(c.card);
+    const hint = state.flipped ? "" : `<div class="hint">(tap Flip to reveal)</div>`;
+
+    el.innerHTML = `
+      <div class="front">${escapeHtml(show)}</div>
+      ${state.flipped ? "" : hint}
+      <div class="meta">${state.i + 1}/${remaining}</div>
+    `;
+
+    saveState(storageKey, state);
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[c]));
+  }
+
+  // Controls
+  document.getElementById("flip").onclick = () => { state.flipped = !state.flipped; render(); };
+  document.getElementById("mode").onclick = () => { state.frontMode = (state.frontMode === "term") ? "def" : "term"; state.flipped = false; render(); };
+  document.getElementById("next").onclick = () => { state.flipped = false; state.i++; clamp(state); render(); };
+  document.getElementById("prev").onclick = () => { state.flipped = false; state.i--; clamp(state); render(); };
+
+  document.getElementById("know").onclick = () => {
+    const c = currentCard(); if (!c) return;
+    state.removed.push({ idx: c.idx, pos: state.i });
+    state.activeIndices.splice(state.i, 1);
+    state.flipped = false;
+    clamp(state);
+    render();
+  };
+
+  document.getElementById("undo").onclick = () => {
+    const last = state.removed.pop(); if (!last) return;
+    const pos = Math.max(0, Math.min(last.pos, state.activeIndices.length));
+    state.activeIndices.splice(pos, 0, last.idx);
+    state.i = pos;
+    state.flipped = false;
+    render();
+  };
+
+  document.getElementById("reset").onclick = () => { state = freshState(); render(); };
+
+  document.getElementById("card").onclick = () => {
+    if (state.activeIndices.length === 0) return;
+    state.flipped = !state.flipped;
+    render();
+  };
+
+  (async function init() {
+    const folder = safeFolderName(getFolderParam());
+    const deckInfoEl = document.getElementById("deckInfo");
+
+    try {
+      const path = await loadDeck(folder);
+      deckId = path;                 // stable identifier per folder/deck.json path
+      storageKey = makeKey(deckId);  // save progress per deck
+      state = loadState(storageKey);
+      render();
+    } catch (e) {
+      deckInfoEl.textContent = "Error: " + e.message;
+      document.getElementById("card").innerHTML = `
+        <div class="front">Couldn’t load deck</div>
+        <div class="hint">Check the URL has ?d=YOUR_FOLDER and that /decks/YOUR_FOLDER/deck.json exists.</div>
+      `;
+    }
+  })();
+</script>
