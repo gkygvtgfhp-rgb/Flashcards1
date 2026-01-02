@@ -36,6 +36,12 @@
     font-weight: 800;
     font-size: 16px; /* a few points bigger */
   }
+  .termstrip.defmode a.term {
+    display: block;
+    padding: 6px 6px;
+    margin: 2px 0;
+  }
+  .termstrip.defmode a.term:hover { text-decoration: underline; }
 </style>
 
 <div class="row">
@@ -236,19 +242,25 @@
   function renderTermStrip() {
     const strip = document.getElementById("termStrip");
     const curIdx = currentIndex();
-
+  
+    const isDefMode = state.frontMode === "def";
+    strip.classList.toggle("defmode", isDefMode);
+  
     const parts = state.order.map((idx, i) => {
-      const term = escapeHtml(CARDS[idx].term);
+      const label = isDefMode ? CARDS[idx].def : CARDS[idx].term;
+      const text = escapeHtml(label);
       const classes = ["term"];
       if (state.known[idx]) classes.push("known");
       if (idx === curIdx) classes.push("current");
-
-      // data-pos lets us jump exactly to this position in the current order
-      return `<a class="${classes.join(" ")}" href="#" data-pos="${i}" title="Jump to: ${term}">${term}</a>`;
+  
+      // data-pos lets us jump to this position in the current order
+      return `<a class="${classes.join(" ")}" href="#" data-pos="${i}" title="Jump">${text}</a>`;
     });
-
-    strip.innerHTML = parts.join(", ");
+  
+    // Term mode: comma-separated. Def mode: newline-separated.
+    strip.innerHTML = isDefMode ? parts.join("") : parts.join(", ");
   }
+
 
   function render() {
     const c = currentCard();
