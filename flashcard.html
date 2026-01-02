@@ -12,11 +12,31 @@
   .pill { padding:4px 10px; border-radius:999px; border:1px solid #ddd; }
   .hint { opacity:.75; font-style: italic; }
   .small { opacity:.7; font-size: 13px; margin-top: 10px; }
+
+  /* Resume modal */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.25);
+    display: none; align-items: center; justify-content: center;
+    padding: 18px;
+  }
+  .modal {
+    width: min(520px, 100%);
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    padding: 16px;
+  }
+  .modal h2 { font-size: 18px; margin: 0 0 8px; }
+  .modal p { margin: 8px 0; opacity: .8; }
+  .modal .row { margin: 12px 0 0; }
 </style>
 
 <div class="row">
   <a class="btn" href="index.html">← Decks</a>
   <span class="pill" id="deckTag">Deck: …</span>
+  <span class="pill" id="knownPill">Known: 0</span>
+  <span class="pill" id="status"></span>
 </div>
 
 <div class="row">
@@ -24,19 +44,30 @@
   <button id="flip">Flip</button>
   <button id="prev">◀︎ Prev</button>
   <button id="next">Next ▶︎</button>
+  <button id="shuffle">Shuffle</button>
   <button id="know">Know it ✓ (remove)</button>
   <button id="undo">Undo</button>
   <button id="reset">Reset</button>
-  <span class="pill" id="status"></span>
 </div>
 
 <div class="card" id="card"></div>
 <div class="small" id="deckInfo"></div>
 
-<script>
-  let CARDS = [];
+<!-- Resume prompt -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2>Resume this deck?</h2>
+    <p id="resumeText"></p>
+    <div class="row">
+      <button id="resumeBtn">Resume</button>
+      <button id="startOverBtn">Start over</button>
+    </div>
+  </div>
+</div>
 
-  const KEY_PREFIX = "flashcards_v5:";
+<script>
+  // ---------------- Deck loading ----------------
+  let CARDS = [];
 
   function getFolderParam() {
     const p = new URLSearchParams(location.search);
@@ -45,7 +76,6 @@
   }
 
   function safeFolderName(folder) {
-    // only allow alphanumeric, underscore, dash
     if (!folder) return null;
     if (!/^[A-Za-z0-9_-]+$/.test(folder)) return null;
     return folder;
@@ -74,8 +104,11 @@
 
     CARDS = cards;
     deckInfoEl.textContent = `${path} (${CARDS.length} cards)`;
-    return path; // used for storage key
+    return path; // stable identifier for storage
   }
+
+  // ---------------- Persistent state (localStorage) ----------------
+  const KEY_PREFIX = "flashcards_v7:";
 
   function makeKey(deckId) { return KEY_PREFIX + deckId; }
 
@@ -84,8 +117,8 @@
       activeIndices: [...CARDS.keys()],
       i: 0,
       flipped: false,
-      frontMode: "term", // "term" or "def"
-      removed: []
+      frontMode: "term", // "term" | "def"
+      removed: []        // stack of {idx, pos}
     };
   }
 
@@ -97,25 +130,31 @@
   function loadState(key) {
     try {
       const s = JSON.parse(localStorage.getItem(key) || "null");
-      if (!s) return freshState();
-      if (!Array.isArray(s.activeIndices) || CARDS.length === 0) return freshState();
+      if (!s) return null; // IMPORTANT: return null to indicate "no saved progress"
+      if (!Array.isArray(s.activeIndices) || CARDS.length === 0) return null;
 
       const max = CARDS.length - 1;
       s.activeIndices = s.activeIndices.filter(n => Number.isInteger(n) && n >= 0 && n <= max);
+
       s.i = Number.isInteger(s.i) ? s.i : 0;
       s.flipped = !!s.flipped;
       s.frontMode = (s.frontMode === "def") ? "def" : "term";
       s.removed = Array.isArray(s.removed) ? s.removed : [];
 
+      s.removed = s.removed
+        .filter(r => r && Number.isInteger(r.idx) && r.idx >= 0 && r.idx <= max && Number.isInteger(r.pos) && r.pos >= 0);
+
       clamp(s);
       return s;
     } catch {
-      return freshState();
+      return null;
     }
   }
 
   function saveState(key, s) { localStorage.setItem(key, JSON.stringify(s)); }
+  function clearState(key) { localStorage.removeItem(key); }
 
+  // ---------------- UI helpers ----------------
   function currentCard() {
     if (state.activeIndices.length === 0) return null;
     const idx = state.activeIndices[state.i];
@@ -125,9 +164,27 @@
   function frontText(card) { return state.frontMode === "term" ? card.term : card.def; }
   function backText(card)  { return state.frontMode === "term" ? card.def  : card.term; }
 
+  function escapeHtml(str) {
+    return str.replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[c]));
+  }
+
+  function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+  }
+
+  // ---------------- App state ----------------
   let deckId = "unknown";
   let storageKey = makeKey(deckId);
   let state = { activeIndices: [], i: 0, flipped: false, frontMode: "term", removed: [] };
+
+  function knownCount() {
+    return CARDS.length - state.activeIndices.length;
+  }
 
   function render() {
     const c = currentCard();
@@ -135,12 +192,14 @@
     const total = CARDS.length;
 
     document.getElementById("status").textContent = `Remaining: ${remaining} / ${total}`;
+    document.getElementById("knownPill").textContent = `Known: ${knownCount()}`;
     document.getElementById("mode").textContent = state.frontMode === "term" ? "Front: Term" : "Front: Definition";
 
     document.getElementById("prev").disabled = remaining === 0 || state.i === 0;
     document.getElementById("next").disabled = remaining === 0 || state.i === remaining - 1;
     document.getElementById("flip").disabled = remaining === 0;
     document.getElementById("know").disabled = remaining === 0;
+    document.getElementById("shuffle").disabled = remaining <= 1;
     document.getElementById("undo").disabled = state.removed.length === 0;
 
     const el = document.getElementById("card");
@@ -166,17 +225,37 @@
     saveState(storageKey, state);
   }
 
-  function escapeHtml(str) {
-    return str.replace(/[&<>"']/g, c => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-    }[c]));
-  }
-
-  // Controls
+  // ---------------- Controls ----------------
   document.getElementById("flip").onclick = () => { state.flipped = !state.flipped; render(); };
-  document.getElementById("mode").onclick = () => { state.frontMode = (state.frontMode === "term") ? "def" : "term"; state.flipped = false; render(); };
-  document.getElementById("next").onclick = () => { state.flipped = false; state.i++; clamp(state); render(); };
-  document.getElementById("prev").onclick = () => { state.flipped = false; state.i--; clamp(state); render(); };
+
+  document.getElementById("mode").onclick = () => {
+    state.frontMode = (state.frontMode === "term") ? "def" : "term";
+    state.flipped = false;
+    render();
+  };
+
+  document.getElementById("next").onclick = () => {
+    state.flipped = false;
+    state.i++;
+    clamp(state);
+    render();
+  };
+
+  document.getElementById("prev").onclick = () => {
+    state.flipped = false;
+    state.i--;
+    clamp(state);
+    render();
+  };
+
+  document.getElementById("shuffle").onclick = () => {
+    const currentIdx = state.activeIndices[state.i];
+    shuffleArray(state.activeIndices);
+    const newPos = state.activeIndices.indexOf(currentIdx);
+    state.i = newPos >= 0 ? newPos : 0;
+    state.flipped = false;
+    render();
+  };
 
   document.getElementById("know").onclick = () => {
     const c = currentCard(); if (!c) return;
@@ -196,7 +275,12 @@
     render();
   };
 
-  document.getElementById("reset").onclick = () => { state = freshState(); render(); };
+  document.getElementById("reset").onclick = () => {
+    state = freshState();
+    clearState(storageKey);
+    hideResumePrompt();
+    render();
+  };
 
   document.getElementById("card").onclick = () => {
     if (state.activeIndices.length === 0) return;
@@ -204,16 +288,54 @@
     render();
   };
 
+  // ---------------- Resume prompt ----------------
+  function showResumePrompt(savedState) {
+    const overlay = document.getElementById("overlay");
+    const resumeText = document.getElementById("resumeText");
+    const known = CARDS.length - savedState.activeIndices.length;
+    const remaining = savedState.activeIndices.length;
+
+    resumeText.textContent = `You previously marked ${known} known and have ${remaining} remaining in this deck.`;
+
+    overlay.style.display = "flex";
+
+    document.getElementById("resumeBtn").onclick = () => {
+      state = savedState;
+      overlay.style.display = "none";
+      render();
+    };
+
+    document.getElementById("startOverBtn").onclick = () => {
+      clearState(storageKey);
+      state = freshState();
+      overlay.style.display = "none";
+      render();
+    };
+  }
+
+  function hideResumePrompt() {
+    document.getElementById("overlay").style.display = "none";
+  }
+
+  // ---------------- Boot ----------------
   (async function init() {
     const folder = safeFolderName(getFolderParam());
     const deckInfoEl = document.getElementById("deckInfo");
 
     try {
       const path = await loadDeck(folder);
-      deckId = path;                 // stable identifier per folder/deck.json path
-      storageKey = makeKey(deckId);  // save progress per deck
-      state = loadState(storageKey);
-      render();
+      deckId = path;                 // e.g. decks/mlch1-3/deck.json
+      storageKey = makeKey(deckId);
+
+      const saved = loadState(storageKey);
+      if (saved) {
+        // Don’t auto-resume—ask.
+        showResumePrompt(saved);
+      } else {
+        state = freshState();
+        render();
+      }
+
     } catch (e) {
       deckInfoEl.textContent = "Error: " + e.message;
       document.getElementById("card").innerHTML = `
