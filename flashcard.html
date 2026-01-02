@@ -249,11 +249,12 @@
   };
 
   document.getElementById("shuffle").onclick = () => {
-    const currentIdx = state.activeIndices[state.i];
     shuffleArray(state.activeIndices);
-    const newPos = state.activeIndices.indexOf(currentIdx);
-    state.i = newPos >= 0 ? newPos : 0;
+  
+    // start at beginning of the new randomized sequence
+    state.i = 0;
     state.flipped = false;
+  
     render();
   };
 
