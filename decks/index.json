@@ -1,5 +1,5 @@
 [
   { "folder": "ml-1", "title": "ML Chapter 1–3", "desc": "Learning as search, bias–variance, entropy/info gain", "count": 60 },
   { "folder": "mlintro", "title": "ML Chapter 1", "desc": "ML intro", "count": 34 },
-  { "folder": "info-theory", "title": "Mathematical Theory of Communication, "desc": "Info theory paper ", "count": 60 }
+  { "folder": "info-theory", "title": "Mathematical Theory of Communication", "desc": "Info theory paper", "count": 60 }
 ]
