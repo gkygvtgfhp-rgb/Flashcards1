@@ -1,4 +1,4 @@
 [
   { "folder": "ml-1", "title": "ML Chapter 1–3", "desc": "Learning as search, bias–variance, entropy/info gain", "count": 60 },
-  { "folder": "ml-c1-1", "title": "ML Chapter 1", "desc": "ML intro", "count": 60 },
+  { "folder": "Ml-c1-1", "title": "ML Chapter 1", "desc": "ML intro", "count": 60 }
 ]
