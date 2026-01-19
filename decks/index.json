@@ -2,5 +2,6 @@
   { "folder": "ml-1", "title": "ML Chapter 1–3", "desc": "Learning as search, bias–variance, entropy/info gain", "count": 60 },
   { "folder": "mlintro", "title": "ML Chapter 1", "desc": "ML intro", "count": 34 },
   { "folder": "info-theory", "title": "Mathematical Theory of Communication", "desc": "Info theory paper", "count": 60 },
-  { "folder": "MapMath1", "title": "Map of Mathematics Step level 1", "desc": "First level of Map of Mathematics", "count": 3 }
+  { "folder": "MapMath1", "title": "Map of Mathematics Step level 1", "desc": "First level of Map of Mathematics", "count": 3 },
+  { "folder": "Chemistry1", "title": "Map of Chemistry Step level 1", "desc": "First level of Map of Chemistry", "count": 0 }
 ]
