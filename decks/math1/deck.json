@@ -1,1 +1,4 @@
-
+[
+  {"term":"Information source","def":"An information source is a stochastic process that generates symbols according to a probability law over an alphabet. Axiom: information is defined by probabilistic generation, not semantic meaning."},
+  {"term":"Information source","def":"An information source is a stochastic process that generates symbols according to a probability law over an alphabet. Axiom: information is defined by probabilistic generation, not semantic meaning."}
+]
