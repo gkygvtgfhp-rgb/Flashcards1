@@ -1,4 +1,5 @@
 [
-  {"term":"Information source","def":"An information source is a stochastic process that generates symbols according to a probability law over an alphabet. Axiom: information is defined by probabilistic generation, not semantic meaning."},
-  {"term":"Information source","def":"An information source is a stochastic process that generates symbols according to a probability law over an alphabet. Axiom: information is defined by probabilistic generation, not semantic meaning."}
+  {"term":"Pure Math branches?","def":"Number systems (natural numbers, integers, rational numbers, etc.), Structures (equations, algebra, linear algebra, vectors, matrices, number theory, combinatorics, group theory, order theory), Spaces (Geometry, Trignonometry, Fractal Geometry, Topology, Measure theory, differential geometry), Changes (Calculus, Vector Calculus, Dynamical Systems, Fluid flow, Ecosystmes, Chaos theory, Complex Analysis)"},
+  {"term":"Applied Math branches? ","def":"Mathematical Physics, Mathematical Chemistry, BioMathematics, Engineering, Numerical Anslsys, Game theory, Economics, Probability, Control theory, Decision Theory, Information Theory, Statistics, Mathematical finance, Optimization, Computer Science, cryptography"},
+  {"term":"Math Foundations? ","def":"Fundamental rules (consistent set of axioms, Godel's Incompleteness Theorem, Mathematical Logic, Set Theory, Graph Theory, Category Theory, Theory of Computation, Complexity"}
 ]
