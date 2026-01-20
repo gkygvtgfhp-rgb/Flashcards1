@@ -1,0 +1,41 @@
+[
+  { "term": "Periodic Table Classification", "def": "The periodic table classifies elements into metals, metalloids, and nonmetals based on their physical and chemical properties." },
+
+  { "term": "Isotope", "def": "An isotope is a version of an element with the same number of protons but a different number of neutrons, resulting in a different atomic mass." },
+
+  { "term": "Ion", "def": "An ion is an atom or molecule that has gained or lost electrons, giving it a net electric charge." },
+
+  { "term": "Atom", "def": "The smallest unit of matter that retains the identity of an element, composed of protons, neutrons, and electrons." },
+
+  { "term": "Element", "def": "A pure substance made of only one kind of atom, defined by its number of protons." },
+
+  { "term": "Compound", "def": "A substance formed when atoms of two or more different elements chemically bond together." },
+
+  { "term": "Democritus", "def": "An ancient Greek philosopher who proposed that matter is composed of indivisible particles called atomos, meaning uncuttable." },
+
+  { "term": "John Dalton", "def": "A scientist who in 1808 proposed the first modern atomic theory, defining atoms as the fundamental units of elements." },
+
+  { "term": "Dalton’s Atomic Theory", "def": "A theory stating that elements are made of atoms, atoms of the same element are identical, compounds form from different atoms, and chemical reactions rearrange atoms without creating or destroying them." },
+
+  { "term": "Law of Definite Proportions", "def": "Proposed by Joseph Proust, this law states that a given compound always contains the same elements in the same proportion by mass." },
+
+  { "term": "Law of Multiple Proportions", "def": "When two elements form more than one compound, the masses that combine do so in ratios of small whole numbers." },
+
+  { "term": "Law of Conservation of Mass", "def": "A principle stating that matter cannot be created or destroyed in a chemical reaction." },
+
+  { "term": "Radiation", "def": "The emission and transmission of energy through space in the form of waves or particles." },
+
+  { "term": "Subatomic Particles", "def": "Particles smaller than atoms, such as electrons, discovered through studies of radiation and electrical discharge in gases." },
+
+  { "term": "Cathode Ray Tube", "def": "A sealed glass tube in which electrons travel from a negative electrode (cathode) to a positive electrode (anode) when voltage is applied." },
+
+  { "term": "Cathode", "def": "The negatively charged electrode in a cathode ray tube that emits electrons." },
+
+  { "term": "Anode", "def": "The positively charged electrode in a cathode ray tube that attracts electrons." },
+
+  { "term": "J. J. Thomson", "def": "A physicist who measured the charge-to-mass ratio of the electron using cathode ray experiments, showing electrons are universal subatomic particles." },
+
+  { "term": "Charge-to-Mass Ratio (e/m)", "def": "A value describing how strongly a charged particle responds to electric or magnetic forces relative to its mass." },
+
+  { "term": "Robert Millikan", "def": "A physicist who measured the charge of a single electron using the oil-drop experiment, enabling calculation of the electron’s mass." }
+]
