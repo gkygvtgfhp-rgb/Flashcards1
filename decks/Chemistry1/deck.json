@@ -1,9 +1,9 @@
 [
   { "term": "Periodic Table Classification", "def": "The periodic table classifies elements into metals, metalloids, and nonmetals based on their physical and chemical properties." },
 
-  { "term": "Isotope", "def": "An isotope is a version of an element with the same number of protons but a different number of neutrons, resulting in a different atomic mass." },
+  { "term": "Isotope", "def": "An isotope ('same place'...on per.table) is a version of an element with the same number of protons but a different number of neutrons, resulting in a different atomic mass." },
 
-  { "term": "Ion", "def": "An ion is an atom or molecule that has gained or lost electrons, giving it a net electric charge." },
+  { "term": "Ion", "def": "An ion ('go'...since move towards electrodes) is an atom or molecule that has gained or lost electrons, giving it a net electric charge." },
 
   { "term": "Atom", "def": "The smallest unit of matter that retains the identity of an element, composed of protons, neutrons, and electrons." },
 
@@ -11,7 +11,7 @@
 
   { "term": "Compound", "def": "A substance formed when atoms of two or more different elements chemically bond together." },
 
-  { "term": "Democritus", "def": "An ancient Greek philosopher who proposed that matter is composed of indivisible particles called atomos, meaning uncuttable." },
+  { "term": "Democritus (deh-moh-KRA-tus)", "def": "An ancient Greek philosopher who proposed that matter is composed of indivisible particles called atomos, meaning uncuttable." },
 
   { "term": "John Dalton", "def": "A scientist who in 1808 proposed the first modern atomic theory, defining atoms as the fundamental units of elements." },
 
