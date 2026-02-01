@@ -37,5 +37,14 @@
 
   { "term": "Charge-to-Mass Ratio (e/m)", "def": "A value describing how strongly a charged particle responds to electric or magnetic forces relative to its mass." },
 
-  { "term": "Robert Millikan", "def": "A physicist who measured the charge of a single electron using the oil-drop experiment, enabling calculation of the electron’s mass." }
+  { "term": "Robert Millikan", "def": "A physicist who measured the charge of a single electron using the oil-drop experiment, enabling calculation of the electron’s mass." },
+  { "term": "what is chemistry?", "def": "the study of matter and changes it undergoes" },
+  { "term": "substance", "def": "matter with a constant composition and distinct properties (taste, appearance, smell, others) (e.g. water, silver, salt, ethanol) substances are either elemts or compounds"},
+  { "term": "mixture", "def": "substances combined where they retain distinct properties (doesnt make a new chemically combined substance or comoound)" },
+  { "term": "matter", "def": "anything that occupies space and has mass" },
+  { "term": "substance v mixture", "def": "s is a form of matter w constant composition & properties. can be an element or 2 or more chemically combined elemtns (compound). m is 2 or more elements and/or compounds combined, but not chemically" },
+    { "term": "element v compound", "def": "e cant be broken down into smaller/simpler/more distinct substance chemically (by chemical means, not nuclear though). c is 2 or more elements chemcially united in fixed proportions" }
+    { "term": "homgeneous v hererogeneous mixture", "def": "homo - same throughout (sugar and warer), hetero - inconsistent througout (oil and water)" },
+    { "term": "TERM", "def": "DEF" },
+    { "term": "TERM", "def": "DEF" }
 ]
