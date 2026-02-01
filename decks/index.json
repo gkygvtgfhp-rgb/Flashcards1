@@ -3,5 +3,5 @@
   { "folder": "mlintro", "title": "ML Chapter 1", "desc": "ML intro", "count": 34 },
   { "folder": "info-theory", "title": "Mathematical Theory of Communication", "desc": "Info theory paper", "count": 60 },
   { "folder": "MathMap1", "title": "Map of Mathematics Step level 1", "desc": "First level of Map of Mathematics", "count": 3 },
-  { "folder": "Chemistry1", "title": "Map of Chemistry Step level 1", "desc": "First level of Map of Chemistry", "count": 0 }
+  { "folder": "Chemistry1", "title": "Chemistry1", "desc": "Chemistry1", "count": 0 }
 ]
