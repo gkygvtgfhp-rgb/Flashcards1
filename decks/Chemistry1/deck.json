@@ -45,6 +45,21 @@
   { "term": "substance v mixture", "def": "s is a form of matter w constant composition & properties. can be an element or 2 or more chemically combined elemtns (compound). m is 2 or more elements and/or compounds combined, but not chemically" },
     { "term": "element v compound", "def": "e cant be broken down into smaller/simpler/more distinct substance chemically (by chemical means, not nuclear though). c is 2 or more elements chemcially united in fixed proportions" }
     { "term": "homgeneous v hererogeneous mixture", "def": "homo - same throughout (sugar and warer), hetero - inconsistent througout (oil and water)" },
+    { "term": "qualitative v quantitative", "def": "qual consisting of general observations about the system. quant comorising numbers obtained through various measurements of the system" },
+    { "term": "hypothesis", "def": "tentative explanation for a set of observations" },
+  { "term": "science 'law'", "def": "a concise verbal or mathematical statement of a relationship between phenomenon that is always the same under the same conditions" },
+  { "term": "theory", "def": "a unifying principle that explains a body of facts and/or those laws that are based on them" },
+  { "term": "TERM", "def": "DEF" },
+  { "term": "TERM", "def": "DEF" },
+  { "term": "TERM", "def": "DEF" },
     { "term": "TERM", "def": "DEF" },
-    { "term": "TERM", "def": "DEF" }
+  { "term": "TERM", "def": "DEF" },
+  { "term": "TERM", "def": "DEF" },
+  { "term": "TERM", "def": "DEF" },
+  { "term": "TERM", "def": "DEF" },
+    { "term": "TERM", "def": "DEF" },
+  { "term": "TERM", "def": "DEF" },
+  { "term": "TERM", "def": "DEF" },
+  { "term": "TERM", "def": "DEF" },
+  { "term": "TERM", "def": "DEF" }
 ]
