@@ -3,5 +3,6 @@
   { "folder": "mlintro", "title": "ML Chapter 1", "desc": "ML intro", "count": 34 },
   { "folder": "info-theory", "title": "Mathematical Theory of Communication", "desc": "Info theory paper", "count": 60 },
   { "folder": "MathMap1", "title": "Map of Mathematics Step level 1", "desc": "First level of Map of Mathematics", "count": 3 },
-  { "folder": "Chem1_Intro", "title": "Chem1_Intro", "desc": "Chem1_Intro", "count": 0 }
+  { "folder": "Chem1_Intro", "title": "Chem1_Intro", "desc": "Chem1_Intro", "count": 0 },
+  { "folder": "Chem2_AtomsMoleculesIons", "title": "Chem2_AtomsMoleculesIons", "desc": "Chem2_AtomsMoleculesIons", "count": 0 }
 ]
