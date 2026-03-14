@@ -1,44 +1,29 @@
 [
-{ “term”: “Actual yield”, “def”: “The measured amount of product obtained from a chemical reaction under real experimental conditions. Axiom: Real processes produce less than or equal to their theoretical potential.” },
-{ “term”: “Atomic mass”, “def”: “The weighted average mass of an element’s naturally occurring isotopes, expressed in atomic mass units. Axiom: Atomic mass reflects isotopic abundance, not a single atom.” },
-{ “term”: “Atomic mass unit (amu)”, “def”: “A unit of mass defined as one twelfth the mass of a carbon-12 atom, used to express atomic and molecular masses. Axiom: Relative atomic scale is anchored to carbon-12.” },
-{ “term”: “Avogadro’s number (NA)”, “def”: “The number of elementary entities in one mole, approximately 6.022 × 10^23 mol^-1. Axiom: The mole bridges microscopic particles and macroscopic measurement.” },
-{ “term”: “Chemical equation”, “def”: “A symbolic representation of a chemical reaction showing reactants, products, and their stoichiometric coefficients. Axiom: Balanced equations encode conservation of mass.” },
-{ “term”: “Chemical reaction”, “def”: “A process in which substances are transformed through rearrangement of atoms into new substances. Axiom: Reactions conserve atoms while altering structure.” },
-{ “term”: “Excess reagent”, “def”: “The reactant present in greater quantity than required by stoichiometry, remaining after the limiting reagent is consumed. Axiom: Reaction completion is controlled by scarcity, not surplus.” },
-{ “term”: “Limiting reagent”, “def”: “The reactant that is completely consumed first, determining the maximum amount of product formed. Axiom: The smallest stoichiometric ratio dictates total output.” },
-{ “term”: “Molar mass (M)”, “def”: “The mass of one mole of a substance, typically expressed in grams per mole. Axiom: Molar mass converts between mass and amount of substance.” },
-{ “term”: “Mole (mol)”, “def”: “The SI unit of amount of substance containing Avogadro’s number of specified entities. Axiom: Quantity in chemistry is counted in discrete but vast units.” },
-{ “term”: “Mole method”, “def”: “A stoichiometric calculation approach that converts given quantities to moles, applies mole ratios, then converts to desired units. Axiom: All stoichiometric reasoning passes through moles.” },
-{ “term”: “Molecular mass”, “def”: “The sum of the atomic masses of all atoms in a molecule, expressed in atomic mass units. Axiom: Molecular identity is quantified by additive atomic contributions.” },
-{ “term”: “Percent composition”, “def”: “The mass percentage of each element in a compound, calculated from its molar mass. Axiom: Composition ratios define chemical identity quantitatively.” },
-{ “term”: “Percent yield”, “def”: “The ratio of actual yield to theoretical yield multiplied by 100 percent. Axiom: Efficiency is measured relative to ideal stoichiometric prediction.” },
-{ “term”: “Product”, “def”: “A substance formed as a result of a chemical reaction. Axiom: Products are rearranged forms of conserved atoms.” },
-{ “term”: “Reactant”, “def”: “A starting substance that undergoes chemical change during a reaction. Axiom: Reactants supply the atoms for all products.” },
-{ “term”: “Stoichiometric amount”, “def”: “The precise quantity of a substance required or produced according to the balanced chemical equation. Axiom: Balanced coefficients define exact proportional relationships.” },
-{ “term”: “Stoichiometry”, “def”: “The quantitative study of relationships between reactants and products in chemical reactions based on balanced equations. Axiom: Chemical change obeys fixed numerical ratios.” },
-{ “term”: “Theoretical yield”, “def”: “The maximum amount of product predicted by stoichiometric calculation assuming complete reaction and no losses. Axiom: Ideal output is bounded by limiting reagent constraints.” },
-{“term”:“Stoichiometry”,“def”:“Stoichiometry is the quantitative analysis of the relationships between reactants and products in a chemical reaction based on the conservation of atoms and fixed molar ratios derived from balanced chemical equations. Axiom: In any chemical reaction, atoms are neither created nor destroyed but rearranged in fixed numerical proportions.”},
-{“term”:“Average Atomic Mass”,“def”:“Average atomic mass is the weighted mean mass of an element’s naturally occurring isotopes, calculated using each isotope’s mass and its relative abundance, so the tabulated atomic mass reflects the composition found in nature rather than a single isotope. Axiom: The atomic mass listed for an element equals the abundance-weighted average of its isotopic masses (e.g., carbon reflects mostly carbon-12 with a small fraction of carbon-13).”},
-{“term”:“Molecular Mass”,“def”:“Molecular mass is the total mass of a molecule calculated as the sum of the atomic masses of all atoms in its chemical formula, expressed in atomic mass units and determined by the carbon-12 mass scale. Axiom: The mass of a molecule equals the additive sum of the masses of its constituent atoms. So we multiply the each molecules element by their number present, and then add together”},
-{
-“term”: “Molecular Mass”,
-“def”: “The sum of the atomic masses of all atoms in a single molecule, expressed in atomic mass units (amu). Axiom: The mass of a molecule equals the additive atomic masses of its constituent atoms.”
-},
-{
-“term”: “Formula Mass”,
-“def”: “The sum of the atomic masses of the atoms in a chemical formula representing the simplest ratio of elements in a substance, typically used for ionic compounds or lattice structures, expressed in atomic mass units (amu). Principle: A formula unit represents stoichiometric composition rather than a discrete molecule.”
-},
-{
-“term”: “Molar Mass”,
-“def”: “The mass of one mole of a substance expressed in grams per mole (g/mol), numerically equal to the molecular or formula mass when expressed in atomic mass units. Axiom: One atomic mass unit per particle corresponds to one gram per mole of particles.”
-},
-{
-“term”: “Crystalline Lattice Dominance in Matter”,
-“def”: “Most stable condensed matter in the universe exists as extended crystalline or metallic lattices rather than discrete molecules, because repeating periodic bonding networks minimize energy under common thermodynamic conditions. Principle: Bulk matter typically organizes into periodic lattices rather than isolated molecular units.”
-},
-{
-"term": "Carbon-12 Atomic Mass Standard",
-"def": "The modern atomic mass scale defines one atomic mass unit (amu) as exactly one twelfth the mass of a carbon-12 atom, adopted in 1961 to unify earlier conflicting oxygen-based standards used by chemists and physicists. Axiom: Carbon-12 anchors the atomic mass scale linking microscopic atomic mass to macroscopic molar mass."
-}
+{"term":"Actual yield","def":"The measured amount of product obtained from a chemical reaction under real experimental conditions. Axiom: Real processes produce less than or equal to their theoretical potential."},
+{"term":"Atomic mass","def":"The weighted average mass of an element’s naturally occurring isotopes, expressed in atomic mass units. Axiom: Atomic mass reflects isotopic abundance, not a single atom."},
+{"term":"Atomic mass unit (amu)","def":"A unit of mass defined as one twelfth the mass of a carbon-12 atom, used to express atomic and molecular masses. Axiom: Relative atomic scale is anchored to carbon-12."},
+{"term":"Avogadro’s number (NA)","def":"The number of elementary entities in one mole, approximately 6.022 × 10^23 mol^-1. Axiom: The mole bridges microscopic particles and macroscopic measurement."},
+{"term":"Chemical equation","def":"A symbolic representation of a chemical reaction showing reactants, products, and their stoichiometric coefficients. Axiom: Balanced equations encode conservation of mass."},
+{"term":"Chemical reaction","def":"A process in which substances are transformed through rearrangement of atoms into new substances. Axiom: Reactions conserve atoms while altering structure."},
+{"term":"Excess reagent","def":"The reactant present in greater quantity than required by stoichiometry, remaining after the limiting reagent is consumed. Axiom: Reaction completion is controlled by scarcity, not surplus."},
+{"term":"Limiting reagent","def":"The reactant that is completely consumed first, determining the maximum amount of product formed. Axiom: The smallest stoichiometric ratio dictates total output."},
+{"term":"Molar mass (M)","def":"The mass of one mole of a substance, typically expressed in grams per mole. Axiom: Molar mass converts between mass and amount of substance."},
+{"term":"Mole (mol)","def":"The SI unit of amount of substance containing Avogadro’s number of specified entities. Axiom: Quantity in chemistry is counted in discrete but vast units."},
+{"term":"Mole method","def":"A stoichiometric calculation approach that converts given quantities to moles, applies mole ratios, then converts to desired units. Axiom: All stoichiometric reasoning passes through moles."},
+{"term":"Molecular mass","def":"The sum of the atomic masses of all atoms in a molecule, expressed in atomic mass units. Axiom: Molecular identity is quantified by additive atomic contributions."},
+{"term":"Percent composition","def":"The mass percentage of each element in a compound, calculated from its molar mass. Axiom: Composition ratios define chemical identity quantitatively."},
+{"term":"Percent yield","def":"The ratio of actual yield to theoretical yield multiplied by 100 percent. Axiom: Efficiency is measured relative to ideal stoichiometric prediction."},
+{"term":"Product","def":"A substance formed as a result of a chemical reaction. Axiom: Products are rearranged forms of conserved atoms."},
+{"term":"Reactant","def":"A starting substance that undergoes chemical change during a reaction. Axiom: Reactants supply the atoms for all products."},
+{"term":"Stoichiometric amount","def":"The precise quantity of a substance required or produced according to the balanced chemical equation. Axiom: Balanced coefficients define exact proportional relationships."},
+{"term":"Stoichiometry","def":"The quantitative study of relationships between reactants and products in chemical reactions based on balanced equations. Axiom: Chemical change obeys fixed numerical ratios."},
+{"term":"Theoretical yield","def":"The maximum amount of product predicted by stoichiometric calculation assuming complete reaction and no losses. Axiom: Ideal output is bounded by limiting reagent constraints."},
+{"term":"Stoichiometry","def":"Stoichiometry is the quantitative analysis of the relationships between reactants and products in a chemical reaction based on the conservation of atoms and fixed molar ratios derived from balanced chemical equations. Axiom: In any chemical reaction, atoms are neither created nor destroyed but rearranged in fixed numerical proportions."},
+{"term":"Average Atomic Mass","def":"Average atomic mass is the weighted mean mass of an element’s naturally occurring isotopes, calculated using each isotope’s mass and its relative abundance, so the tabulated atomic mass reflects the composition found in nature rather than a single isotope. Axiom: The atomic mass listed for an element equals the abundance-weighted average of its isotopic masses (e.g., carbon reflects mostly carbon-12 with a small fraction of carbon-13)."},
+{"term":"Molecular Mass","def":"Molecular mass is the total mass of a molecule calculated as the sum of the atomic masses of all atoms in its chemical formula, expressed in atomic mass units and determined by the carbon-12 mass scale. Axiom: The mass of a molecule equals the additive sum of the masses of its constituent atoms. So we multiply the each molecules element by their number present, and then add together"},
+{"term":"Molecular Mass","def":"The sum of the atomic masses of all atoms in a single molecule, expressed in atomic mass units (amu). Axiom: The mass of a molecule equals the additive atomic masses of its constituent atoms."},
+{"term":"Formula Mass","def":"The sum of the atomic masses of the atoms in a chemical formula representing the simplest ratio of elements in a substance, typically used for ionic compounds or lattice structures, expressed in atomic mass units (amu). Principle: A formula unit represents stoichiometric composition rather than a discrete molecule."},
+{"term":"Molar Mass","def":"The mass of one mole of a substance expressed in grams per mole (g/mol), numerically equal to the molecular or formula mass when expressed in atomic mass units. Axiom: One atomic mass unit per particle corresponds to one gram per mole of particles."},
+{"term":"Crystalline Lattice Dominance in Matter","def":"Most stable condensed matter in the universe exists as extended crystalline or metallic lattices rather than discrete molecules, because repeating periodic bonding networks minimize energy under common thermodynamic conditions. Principle: Bulk matter typically organizes into periodic lattices rather than isolated molecular units."},
+{"term":"Carbon-12 Atomic Mass Standard","def":"The modern atomic mass scale defines one atomic mass unit (amu) as exactly one twelfth the mass of a carbon-12 atom, adopted in 1961 to unify earlier conflicting oxygen-based standards used by chemists and physicists. Axiom: Carbon-12 anchors the atomic mass scale linking microscopic atomic mass to macroscopic molar mass."}
 ]
