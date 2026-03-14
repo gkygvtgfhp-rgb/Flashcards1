@@ -1,246 +1,78 @@
 [
-{
-"term": "Element Symbol",
-"def": "A standardized one- or two-letter abbreviation representing a chemical element, with the first letter capitalized and the second lowercase, often derived from English or historical Latin names. Axiom: Element symbols provide a universal shorthand for atomic identity."
-},
-{
-"term": "Classification of Matter",
-"def": "Matter is categorized as mixtures or pure substances, where mixtures can be separated by physical methods while pure substances require chemical change and consist of elements or compounds. Principle: The method required for separation distinguishes mixtures from substances."
-},
-{
-"term": "Pure Substance",
-"def": "Matter with a fixed composition and distinct properties that cannot be separated into other materials by physical means, including elements and compounds. Axiom: A pure substance has constant composition regardless of sample size."
-},
-{
-"term": "Mixture",
-"def": "A physical combination of two or more substances in variable proportions where each component retains its chemical identity and can be separated by physical methods. Principle: Mixtures preserve the identities of their components."
-},
-{
-"term": "Homogeneous Mixture",
-"def": "A mixture with uniform composition and properties throughout, often called a solution. Axiom: Uniform macroscopic composition defines a homogeneous mixture."
-},
-{
-"term": "Heterogeneous Mixture",
-"def": "A mixture with non-uniform composition in which distinct regions or phases can be observed. Principle: Visible compositional variation indicates heterogeneity."
-},
-{
-"term": "Physical Property",
-"def": "A property of a substance that can be observed or measured without altering its chemical composition or identity. Axiom: Physical observation does not change molecular identity."
-},
-{
-"term": "Chemical Property",
-"def": "A property describing a substance’s ability to undergo chemical change, producing new substances with different compositions. Principle: Chemical properties are revealed only through chemical transformation."
-},
-{
-"term": "Extensive Property",
-"def": "A property that depends on the amount of matter present, such as mass, volume, or length. Axiom: Extensive properties scale with system size."
-},
-{
-"term": "Intensive Property",
-"def": "A property independent of the amount of matter present, such as temperature, density, or melting point. Axiom: Intensive properties characterize material identity rather than quantity."
-},
-{
-"term": "Macroscopic Property",
-"def": "A property measurable directly at the scale of everyday observation, such as mass, temperature, or volume. Principle: Macroscopic measurements describe bulk behavior."
-},
-{
-"term": "Microscopic Property",
-"def": "A property that exists at the atomic or molecular scale and must be inferred indirectly through experimental measurement or theory. Principle: Microscopic properties are deduced from observable macroscopic effects."
-},
-{
-"term": "International System of Units (SI)",
-"def": "The globally standardized measurement system based on seven base units: meter, kilogram, second, ampere, kelvin, mole, and candela. Axiom: Scientific measurement requires a coherent universal unit framework."
-},
-{
-"term": "Mass",
-"def": "A measure of the quantity of matter in an object that remains constant regardless of location or gravitational field. Principle: Mass is intrinsic to matter."
-},
-{
-"term": "Weight",
-"def": "The force exerted on an object by gravity and therefore dependent on the local gravitational field. Axiom: Weight equals gravitational force acting on mass."
-},
-{
-"term": "Volume",
-"def": "The measure of three-dimensional space occupied by matter, commonly expressed in cubic units such as cubic meters. Principle: Volume quantifies spatial extent."
-},
-{
-"term": "Density",
-"def": "The mass per unit volume of a substance, typically expressed in grams per cubic centimeter in chemistry. Axiom: Density equals mass divided by volume."
-},
-{
-"term": "Temperature",
-"def": "A quantitative measure of the thermal state of a system related to the average kinetic energy of its particles. Principle: Temperature reflects microscopic motion of matter."
-},
-{
-"term": "Fahrenheit Temperature Scale",
-"def": "A temperature scale where water freezes at 32 degrees and boils at 212 degrees under standard conditions. Principle: Fahrenheit partitions the freezing–boiling range of water into 180 degrees."
-},
-{
-"term": "Celsius Temperature Scale",
-"def": "A temperature scale where water freezes at 0 degrees and boils at 100 degrees under standard conditions. Principle: Celsius divides the water phase transition interval into 100 equal parts."
-},
-{
-"term": "Kelvin Temperature Scale",
-"def": "The absolute thermodynamic temperature scale beginning at absolute zero, where 0 K corresponds to −273.15 °C. Axiom: Absolute zero defines the lower bound of thermodynamic temperature."
-},
-{
-"term": "Scientific Notation",
-"def": "A numerical representation expressing values as a coefficient multiplied by a power of ten to efficiently handle very large or very small quantities. Principle: Powers of ten encode magnitude while the coefficient preserves significant digits."
-},
-{
-"term": "Significant Figures",
-"def": "The meaningful digits in a measured quantity consisting of all certain digits plus the first uncertain digit. Axiom: Measurement precision is encoded in the number of significant figures."
-},
-{
-"term": "Significant Figure Rule for Addition and Subtraction",
-"def": "When adding or subtracting measurements, the result is rounded to the least precise decimal place among the values used. Principle: Addition preserves positional precision."
-},
-{
-"term": "Significant Figure Rule for Multiplication and Division",
-"def": "When multiplying or dividing measurements, the result contains the same number of significant figures as the least precise measurement. Principle: Multiplication preserves relative precision."
-},
-{
-"term": "Accuracy",
-"def": "The degree to which a measured value agrees with the true or accepted value of a quantity. Axiom: Accuracy measures correctness relative to truth."
-},
-{
-"term": "Precision",
-"def": "The degree to which repeated measurements of the same quantity agree with one another. Principle: Precision measures reproducibility independent of correctness."
-},
-{
-"term": "Dimensional Analysis",
-"def": "A method of converting units or verifying equations by multiplying quantities by conversion factors arranged so unwanted units cancel. Axiom: Valid physical equations preserve unit consistency."
-},
-{
-"term": "Atomic Number",
-"def": "The number of protons in the nucleus of an atom, uniquely identifying the chemical element. Axiom: Atomic number determines elemental identity."
-},
-{
-"term": "Mass Number",
-"def": "The total number of protons and neutrons in the nucleus of an atom. Principle: Nuclear mass number equals proton count plus neutron count."
-},
-{
-"term": "Periodic Table",
-"def": "A tabular arrangement of elements ordered by increasing atomic number, revealing repeating chemical and physical properties across rows and columns. Principle: Chemical periodicity arises from electronic structure."
-},
-{
-"term": "Period (Periodic Table)",
-"def": "A horizontal row in the periodic table where elements show gradual changes in properties across increasing atomic number. Principle: Periodic trends emerge across rows due to electron shell filling."
-},
-{
-"term": "Group (Periodic Table)",
-"def": "A vertical column of elements sharing similar chemical behavior due to comparable valence electron configurations. Axiom: Elements in the same group exhibit related chemical properties."
-},
-{
-"term": "Metal",
-"def": "An element that conducts heat and electricity well and tends to lose electrons during chemical reactions. Principle: Metallic behavior arises from mobile electrons."
-},
-{
-"term": "Nonmetal",
-"def": "An element that is typically a poor conductor of heat and electricity and tends to gain electrons in chemical reactions. Principle: Nonmetals favor electron acquisition."
-},
-{
-"term": "Metalloid",
-"def": "An element with physical and chemical properties intermediate between metals and nonmetals. Principle: Metalloids exhibit mixed conductive and chemical behavior."
-},
-{
-"term": "Monatomic Gas",
-"def": "A gas consisting of individual atoms rather than molecules, characteristic of the noble gases. Principle: Chemically stable atoms can exist independently as particles."
-},
-{
-"term": "Molecule",
-"def": "A discrete aggregate of two or more atoms held together by chemical bonds in a definite arrangement. Axiom: Molecules are stable groupings of atoms formed through bonding."
-},
-{
-"term": "Diatomic Molecule",
-"def": "A molecule composed of exactly two atoms, either of the same element or different elements. Principle: Some elements naturally occur as two-atom molecules."
-},
-{
-"term": "Polyatomic Molecule",
-"def": "A molecule containing more than two atoms bonded together in a specific arrangement. Principle: Molecular complexity arises from multiple bonded atoms."
-},
-{
-"term": "Ion",
-"def": "An atom or group of atoms that carries a net electric charge due to the loss or gain of electrons. Axiom: Charge imbalance arises from unequal electron and proton counts."
-},
-{
-"term": "Cation",
-"def": "A positively charged ion formed when an atom loses one or more electrons. Principle: Electron loss produces positive charge."
-},
-{
-"term": "Anion",
-"def": "A negatively charged ion formed when an atom gains one or more electrons. Principle: Electron gain produces negative charge."
-},
-{
-"term": "Ionic Compound",
-"def": "A compound composed of cations and anions held together by electrostatic attraction in an extended lattice structure. Axiom: Opposite charges form stable ionic assemblies."
-},
-{
-"term": "Monatomic Ion",
-"def": "An ion consisting of a single atom that has gained or lost electrons. Principle: Charge can reside on an individual atom."
-},
-{
-"term": "Polyatomic Ion",
-"def": "A charged species composed of two or more covalently bonded atoms carrying an overall net charge. Principle: Molecular groups can act as single ionic units."
-},
-{
-"term": "Chemical Formula",
-"def": "A symbolic representation indicating the elements present in a substance and their relative numbers or ratios. Axiom: Chemical formulas encode composition."
-},
-{
-"term": "Molecular Formula",
-"def": "A formula that specifies the exact number of atoms of each element in a molecule. Principle: Molecular formulas represent actual atomic counts."
-},
-{
-"term": "Empirical Formula",
-"def": "The simplest whole-number ratio of atoms of each element in a compound. Axiom: Empirical formulas reduce composition to its minimal proportional form."
-},
-{
-"term": "Allotrope",
-"def": "One of two or more distinct structural forms of the same element in the same physical state. Principle: Atomic arrangement can produce different elemental forms."
-},
-{
-"term": "Binary Compound",
-"def": "A chemical compound composed of two different elements. Axiom: Binary compounds contain exactly two elemental species."
-},
-{
-"term": "Ternary Compound",
-"def": "A chemical compound containing three different elements. Principle: Compound classification can be defined by element count."
-},
-{
-"term": "Stock System",
-"def": "A nomenclature system that uses Roman numerals to indicate the oxidation state of metals capable of forming multiple cations. Principle: Oxidation state must be specified when multiple ionic charges are possible."
-},
-{
-"term": "Molecular Compound",
-"def": "A compound formed between nonmetal atoms that share electrons through covalent bonding and exist as discrete molecules. Axiom: Covalent bonding produces molecular units rather than ionic lattices."
-},
-{
-"term": "Binary Molecular Compound",
-"def": "A molecular compound composed of two different nonmetal elements bonded covalently. Principle: Binary molecular compounds contain two nonmetal species."
-},
-{
-"term": "Greek Prefix System",
-"def": "A naming convention using numerical prefixes to indicate the number of atoms of each element in molecular compounds. Principle: Prefixes encode stoichiometric quantity in molecular names."
-},
-{ “term”: “Acid”, “def”: “A substance that yields hydrogen ions (H+) when dissolved in water; H+ is effectively a proton in aqueous chemistry. Axiom: An acid is operationally defined by its production of H+ in water.” },
-{ “term”: “Binary Acid”, “def”: “An acid composed of hydrogen and a single nonmetal anion, typically named with the prefix "hydro-" and the suffix "-ic" based on the anion root. Axiom: Binary acid naming encodes the parent "-ide" anion into "hydro-…-ic".” },
-{ “term”: “Hydrogen Chloride vs. Hydrochloric Acid”, “def”: “HCl is called hydrogen chloride in its gaseous or pure liquid molecular form, but hydrochloric acid when dissolved in water and dissociated into H+ and Cl−. Axiom: The name of a substance can depend on its physical state and degree of ionization.” },
-{ “term”: “Oxoacid”, “def”: “An acid containing hydrogen, oxygen, and a central element, typically written with H first, followed by the central atom and then oxygen. Axiom: Oxoacids are structurally defined by hydrogen bound to an oxygen-containing polyatomic framework.” },
-{ “term”: “Reference "-ic" Oxoacid”, “def”: “The standard oxoacid form of a central element used as a naming baseline, typically ending in "-ic" such as nitric or sulfuric acid. Axiom: The "-ic" form serves as the naming anchor for related oxygen variants.” },
-{ “term”: “Per-…-ic Acid”, “def”: “An oxoacid formed by adding one oxygen atom to the reference "-ic" acid, indicated by the prefix "per-" while retaining the "-ic" suffix. Axiom: Adding oxygen beyond the reference state increases oxidation and adds "per-."” },
-{ “term”: “"-ous" Acid”, “def”: “An oxoacid formed by removing one oxygen atom from the reference "-ic" acid, changing the suffix to "-ous." Axiom: Removing one oxygen from the reference "-ic" state yields the "-ous" form.” },
-{ “term”: “Hypo-…-ous Acid”, “def”: “An oxoacid formed by removing two oxygen atoms from the reference "-ic" acid, indicated by the prefix "hypo-" and suffix "-ous." Axiom: The lowest oxygen variant is marked by "hypo-" and "-ous.".” },
-{ “term”: “Oxoanion”, “def”: “An anion derived from an oxoacid by removal of one or more hydrogen ions, retaining the oxygen-central atom framework. Axiom: Oxoanions are conjugate bases formed by deprotonation of oxoacids.” },
-{ “term”: “"-ate" Anion”, “def”: “The oxoanion formed by removing all hydrogen ions from a "-ic" acid, resulting in a name ending in "-ate." Axiom: Full deprotonation of an "-ic" acid produces an "-ate" anion.” },
-{ “term”: “"-ite" Anion”, “def”: “The oxoanion formed by removing all hydrogen ions from an "-ous" acid, resulting in a name ending in "-ite." Axiom: Full deprotonation of an "-ous" acid produces an "-ite" anion.” },
-{ “term”: “Hydrogen-Containing Oxoanion”, “def”: “An oxoanion in which one or more, but not all, acidic hydrogens remain, indicated by prefixes such as "hydrogen" or "dihydrogen" to specify the count. Axiom: Partial deprotonation requires explicit enumeration of remaining hydrogens.” },
-{ “term”: “Base”, “def”: “A substance that yields hydroxide ions (OH−) when dissolved in water, either by direct dissociation or by reaction with water. Axiom: A base is operationally defined by its generation of OH− in aqueous solution.” },
-{ “term”: “Metal Hydroxide Base”, “def”: “An ionic compound containing hydroxide ions, such as NaOH or KOH, that dissociates in water to release OH− directly. Axiom: Metal hydroxides function as bases through ionic dissociation of OH−.” },
-{ “term”: “Ammonia as a Base”, “def”: “NH3 acts as a base by reacting with water to produce NH4+ and OH−, even though it contains no hydroxide ion in its formula. Axiom: A base need not contain OH− structurally if it generates OH− in water.” },
-{ “term”: “Hydrate”, “def”: “A compound containing a fixed number of water molecules chemically associated with each formula unit, denoted by a dot followed by nH2O. Axiom: Hydrates are defined by stoichiometric incorporation of water into the crystal structure.” },
-{ “term”: “Anhydrous Compound”, “def”: “A compound that contains no associated water molecules, typically formed by heating a hydrate to remove water. Axiom: Removal of coordinated water yields the anhydrous form.” },
-{ “term”: “Hydrocarbon”, “def”: “An organic compound composed solely of carbon and hydrogen atoms, often used as fuels or chemical feedstocks. Axiom: Hydrocarbons are structurally restricted to C–H frameworks.” },
-{ “term”: “Alkane”, “def”: “A saturated hydrocarbon containing only single C–C bonds and typically following the general formula CnH2n+2 for straight chains. Axiom: Alkanes maximize hydrogen count under single-bonded carbon connectivity.” },
-{ “term”: “Functional Group”, “def”: “A specific group of atoms within a molecule that imparts characteristic chemical reactivity and properties, such as hydroxyl, amino, or carboxyl groups. Axiom: Functional groups determine molecular behavior more than the carbon skeleton alone.” }
+{"term":"Element Symbol","def":"A standardized one- or two-letter abbreviation representing a chemical element, with the first letter capitalized and the second lowercase, often derived from English or historical Latin names. Axiom: Element symbols provide a universal shorthand for atomic identity."},
+{"term":"Classification of Matter","def":"Matter is categorized as mixtures or pure substances, where mixtures can be separated by physical methods while pure substances require chemical change and consist of elements or compounds. Principle: The method required for separation distinguishes mixtures from substances."},
+{"term":"Pure Substance","def":"Matter with a fixed composition and distinct properties that cannot be separated into other materials by physical means, including elements and compounds. Axiom: A pure substance has constant composition regardless of sample size."},
+{"term":"Mixture","def":"A physical combination of two or more substances in variable proportions where each component retains its chemical identity and can be separated by physical methods. Principle: Mixtures preserve the identities of their components."},
+{"term":"Homogeneous Mixture","def":"A mixture with uniform composition and properties throughout, often called a solution. Axiom: Uniform macroscopic composition defines a homogeneous mixture."},
+{"term":"Heterogeneous Mixture","def":"A mixture with non-uniform composition in which distinct regions or phases can be observed. Principle: Visible compositional variation indicates heterogeneity."},
+{"term":"Physical Property","def":"A property of a substance that can be observed or measured without altering its chemical composition or identity. Axiom: Physical observation does not change molecular identity."},
+{"term":"Chemical Property","def":"A property describing a substance’s ability to undergo chemical change, producing new substances with different compositions. Principle: Chemical properties are revealed only through chemical transformation."},
+{"term":"Extensive Property","def":"A property that depends on the amount of matter present, such as mass, volume, or length. Axiom: Extensive properties scale with system size."},
+{"term":"Intensive Property","def":"A property independent of the amount of matter present, such as temperature, density, or melting point. Axiom: Intensive properties characterize material identity rather than quantity."},
+{"term":"Macroscopic Property","def":"A property measurable directly at the scale of everyday observation, such as mass, temperature, or volume. Principle: Macroscopic measurements describe bulk behavior."},
+{"term":"Microscopic Property","def":"A property that exists at the atomic or molecular scale and must be inferred indirectly through experimental measurement or theory. Principle: Microscopic properties are deduced from observable macroscopic effects."},
+{"term":"International System of Units (SI)","def":"The globally standardized measurement system based on seven base units: meter, kilogram, second, ampere, kelvin, mole, and candela. Axiom: Scientific measurement requires a coherent universal unit framework."},
+{"term":"Mass","def":"A measure of the quantity of matter in an object that remains constant regardless of location or gravitational field. Principle: Mass is intrinsic to matter."},
+{"term":"Weight","def":"The force exerted on an object by gravity and therefore dependent on the local gravitational field. Axiom: Weight equals gravitational force acting on mass."},
+{"term":"Volume","def":"The measure of three-dimensional space occupied by matter, commonly expressed in cubic units such as cubic meters. Principle: Volume quantifies spatial extent."},
+{"term":"Density","def":"The mass per unit volume of a substance, typically expressed in grams per cubic centimeter in chemistry. Axiom: Density equals mass divided by volume."},
+{"term":"Temperature","def":"A quantitative measure of the thermal state of a system related to the average kinetic energy of its particles. Principle: Temperature reflects microscopic motion of matter."},
+{"term":"Fahrenheit Temperature Scale","def":"A temperature scale where water freezes at 32 degrees and boils at 212 degrees under standard conditions. Principle: Fahrenheit partitions the freezing–boiling range of water into 180 degrees."},
+{"term":"Celsius Temperature Scale","def":"A temperature scale where water freezes at 0 degrees and boils at 100 degrees under standard conditions. Principle: Celsius divides the water phase transition interval into 100 equal parts."},
+{"term":"Kelvin Temperature Scale","def":"The absolute thermodynamic temperature scale beginning at absolute zero, where 0 K corresponds to −273.15 °C. Axiom: Absolute zero defines the lower bound of thermodynamic temperature."},
+{"term":"Scientific Notation","def":"A numerical representation expressing values as a coefficient multiplied by a power of ten to efficiently handle very large or very small quantities. Principle: Powers of ten encode magnitude while the coefficient preserves significant digits."},
+{"term":"Significant Figures","def":"The meaningful digits in a measured quantity consisting of all certain digits plus the first uncertain digit. Axiom: Measurement precision is encoded in the number of significant figures."},
+{"term":"Significant Figure Rule for Addition and Subtraction","def":"When adding or subtracting measurements, the result is rounded to the least precise decimal place among the values used. Principle: Addition preserves positional precision."},
+{"term":"Significant Figure Rule for Multiplication and Division","def":"When multiplying or dividing measurements, the result contains the same number of significant figures as the least precise measurement. Principle: Multiplication preserves relative precision."},
+{"term":"Accuracy","def":"The degree to which a measured value agrees with the true or accepted value of a quantity. Axiom: Accuracy measures correctness relative to truth."},
+{"term":"Precision","def":"The degree to which repeated measurements of the same quantity agree with one another. Principle: Precision measures reproducibility independent of correctness."},
+{"term":"Dimensional Analysis","def":"A method of converting units or verifying equations by multiplying quantities by conversion factors arranged so unwanted units cancel. Axiom: Valid physical equations preserve unit consistency."},
+{"term":"Atomic Number","def":"The number of protons in the nucleus of an atom, uniquely identifying the chemical element. Axiom: Atomic number determines elemental identity."},
+{"term":"Mass Number","def":"The total number of protons and neutrons in the nucleus of an atom. Principle: Nuclear mass number equals proton count plus neutron count."},
+{"term":"Periodic Table","def":"A tabular arrangement of elements ordered by increasing atomic number, revealing repeating chemical and physical properties across rows and columns. Principle: Chemical periodicity arises from electronic structure."},
+{"term":"Period (Periodic Table)","def":"A horizontal row in the periodic table where elements show gradual changes in properties across increasing atomic number. Principle: Periodic trends emerge across rows due to electron shell filling."},
+{"term":"Group (Periodic Table)","def":"A vertical column of elements sharing similar chemical behavior due to comparable valence electron configurations. Axiom: Elements in the same group exhibit related chemical properties."},
+{"term":"Metal","def":"An element that conducts heat and electricity well and tends to lose electrons during chemical reactions. Principle: Metallic behavior arises from mobile electrons."},
+{"term":"Nonmetal","def":"An element that is typically a poor conductor of heat and electricity and tends to gain electrons in chemical reactions. Principle: Nonmetals favor electron acquisition."},
+{"term":"Metalloid","def":"An element with physical and chemical properties intermediate between metals and nonmetals. Principle: Metalloids exhibit mixed conductive and chemical behavior."},
+{"term":"Monatomic Gas","def":"A gas consisting of individual atoms rather than molecules, characteristic of the noble gases. Principle: Chemically stable atoms can exist independently as particles."},
+{"term":"Molecule","def":"A discrete aggregate of two or more atoms held together by chemical bonds in a definite arrangement. Axiom: Molecules are stable groupings of atoms formed through bonding."},
+{"term":"Diatomic Molecule","def":"A molecule composed of exactly two atoms, either of the same element or different elements. Principle: Some elements naturally occur as two-atom molecules."},
+{"term":"Polyatomic Molecule","def":"A molecule containing more than two atoms bonded together in a specific arrangement. Principle: Molecular complexity arises from multiple bonded atoms."},
+{"term":"Ion","def":"An atom or group of atoms that carries a net electric charge due to the loss or gain of electrons. Axiom: Charge imbalance arises from unequal electron and proton counts."},
+{"term":"Cation","def":"A positively charged ion formed when an atom loses one or more electrons. Principle: Electron loss produces positive charge."},
+{"term":"Anion","def":"A negatively charged ion formed when an atom gains one or more electrons. Principle: Electron gain produces negative charge."},
+{"term":"Ionic Compound","def":"A compound composed of cations and anions held together by electrostatic attraction in an extended lattice structure. Axiom: Opposite charges form stable ionic assemblies."},
+{"term":"Monatomic Ion","def":"An ion consisting of a single atom that has gained or lost electrons. Principle: Charge can reside on an individual atom."},
+{"term":"Polyatomic Ion","def":"A charged species composed of two or more covalently bonded atoms carrying an overall net charge. Principle: Molecular groups can act as single ionic units."},
+{"term":"Chemical Formula","def":"A symbolic representation indicating the elements present in a substance and their relative numbers or ratios. Axiom: Chemical formulas encode composition."},
+{"term":"Molecular Formula","def":"A formula that specifies the exact number of atoms of each element in a molecule. Principle: Molecular formulas represent actual atomic counts."},
+{"term":"Empirical Formula","def":"The simplest whole-number ratio of atoms of each element in a compound. Axiom: Empirical formulas reduce composition to its minimal proportional form."},
+{"term":"Allotrope","def":"One of two or more distinct structural forms of the same element in the same physical state. Principle: Atomic arrangement can produce different elemental forms."},
+{"term":"Binary Compound","def":"A chemical compound composed of two different elements. Axiom: Binary compounds contain exactly two elemental species."},
+{"term":"Ternary Compound","def":"A chemical compound containing three different elements. Principle: Compound classification can be defined by element count."},
+{"term":"Stock System","def":"A nomenclature system that uses Roman numerals to indicate the oxidation state of metals capable of forming multiple cations. Principle: Oxidation state must be specified when multiple ionic charges are possible."},
+{"term":"Molecular Compound","def":"A compound formed between nonmetal atoms that share electrons through covalent bonding and exist as discrete molecules. Axiom: Covalent bonding produces molecular units rather than ionic lattices."},
+{"term":"Binary Molecular Compound","def":"A molecular compound composed of two different nonmetal elements bonded covalently. Principle: Binary molecular compounds contain two nonmetal species."},
+{"term":"Greek Prefix System","def":"A naming convention using numerical prefixes to indicate the number of atoms of each element in molecular compounds. Principle: Prefixes encode stoichiometric quantity in molecular names."},
+{"term":"Acid","def":"A substance that yields hydrogen ions (H+) when dissolved in water; H+ is effectively a proton in aqueous chemistry. Axiom: An acid is operationally defined by its production of H+ in water."},
+{"term":"Binary Acid","def":"An acid composed of hydrogen and a single nonmetal anion, typically named with the prefix \"hydro-\" and the suffix \"-ic\" based on the anion root. Axiom: Binary acid naming encodes the parent \"-ide\" anion into \"hydro-…-ic\"."},
+{"term":"Hydrogen Chloride vs. Hydrochloric Acid","def":"HCl is called hydrogen chloride in its gaseous or pure liquid molecular form, but hydrochloric acid when dissolved in water and dissociated into H+ and Cl−. Axiom: The name of a substance can depend on its physical state and degree of ionization."},
+{"term":"Oxoacid","def":"An acid containing hydrogen, oxygen, and a central element, typically written with H first, followed by the central atom and then oxygen. Axiom: Oxoacids are structurally defined by hydrogen bound to an oxygen-containing polyatomic framework."},
+{"term":"Reference \"-ic\" Oxoacid","def":"The standard oxoacid form of a central element used as a naming baseline, typically ending in \"-ic\" such as nitric or sulfuric acid. Axiom: The \"-ic\" form serves as the naming anchor for related oxygen variants."},
+{"term":"Per-…-ic Acid","def":"An oxoacid formed by adding one oxygen atom to the reference \"-ic\" acid, indicated by the prefix \"per-\" while retaining the \"-ic\" suffix. Axiom: Adding oxygen beyond the reference state increases oxidation and adds \"per-\"."},
+{"term":"\"-ous\" Acid","def":"An oxoacid formed by removing one oxygen atom from the reference \"-ic\" acid, changing the suffix to \"-ous.\" Axiom: Removing one oxygen from the reference \"-ic\" state yields the \"-ous\" form."},
+{"term":"Hypo-…-ous Acid","def":"An oxoacid formed by removing two oxygen atoms from the reference \"-ic\" acid, indicated by the prefix \"hypo-\" and suffix \"-ous.\" Axiom: The lowest oxygen variant is marked by \"hypo-\" and \"-ous.\"."},
+{"term":"Oxoanion","def":"An anion derived from an oxoacid by removal of one or more hydrogen ions, retaining the oxygen-central atom framework. Axiom: Oxoanions are conjugate bases formed by deprotonation of oxoacids."},
+{"term":"\"-ate\" Anion","def":"The oxoanion formed by removing all hydrogen ions from a \"-ic\" acid, resulting in a name ending in \"-ate.\" Axiom: Full deprotonation of an \"-ic\" acid produces an \"-ate\" anion."},
+{"term":"\"-ite\" Anion","def":"The oxoanion formed by removing all hydrogen ions from an \"-ous\" acid, resulting in a name ending in \"-ite.\" Axiom: Full deprotonation of an \"-ous\" acid produces an \"-ite\" anion."},
+{"term":"Hydrogen-Containing Oxoanion","def":"An oxoanion in which one or more, but not all, acidic hydrogens remain, indicated by prefixes such as \"hydrogen\" or \"dihydrogen\" to specify the count. Axiom: Partial deprotonation requires explicit enumeration of remaining hydrogens."},
+{"term":"Base","def":"A substance that yields hydroxide ions (OH−) when dissolved in water, either by direct dissociation or by reaction with water. Axiom: A base is operationally defined by its generation of OH− in aqueous solution."},
+{"term":"Metal Hydroxide Base","def":"An ionic compound containing hydroxide ions, such as NaOH or KOH, that dissociates in water to release OH− directly. Axiom: Metal hydroxides function as bases through ionic dissociation of OH−."},
+{"term":"Ammonia as a Base","def":"NH3 acts as a base by reacting with water to produce NH4+ and OH−, even though it contains no hydroxide ion in its formula. Axiom: A base need not contain OH− structurally if it generates OH− in water."},
+{"term":"Hydrate","def":"A compound containing a fixed number of water molecules chemically associated with each formula unit, denoted by a dot followed by nH2O. Axiom: Hydrates are defined by stoichiometric incorporation of water into the crystal structure."},
+{"term":"Anhydrous Compound","def":"A compound that contains no associated water molecules, typically formed by heating a hydrate to remove water. Axiom: Removal of coordinated water yields the anhydrous form."},
+{"term":"Hydrocarbon","def":"An organic compound composed solely of carbon and hydrogen atoms, often used as fuels or chemical feedstocks. Axiom: Hydrocarbons are structurally restricted to C–H frameworks."},
+{"term":"Alkane","def":"A saturated hydrocarbon containing only single C–C bonds and typically following the general formula CnH2n+2 for straight chains. Axiom: Alkanes maximize hydrogen count under single-bonded carbon connectivity."},
+{"term":"Functional Group","def":"A specific group of atoms within a molecule that imparts characteristic chemical reactivity and properties, such as hydroxyl, amino, or carboxyl groups. Axiom: Functional groups determine molecular behavior more than the carbon skeleton alone."}
 ]
