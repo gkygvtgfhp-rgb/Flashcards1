@@ -1,7 +1,7 @@
 [
-  { "term": "Periodic Table Classification", "def": "The periodic table classifies elements into metals, metalloids, and nonmetals based on their physical and chemical properties." },
-  { "term": "Isotope", "def": "An isotope ('same place'...on per.table) is a version of an element with the same number of protons but a different number of neutrons, resulting in a different atomic mass." },
-  { "term": "Ion", "def": "An ion ('go'...since move towards electrodes) is an atom or molecule that has gained or lost electrons, giving it a net electric charge." },
+  { "term": "Periodic Table Classification", "def": "a table classifies elements into metals, metalloids, and nonmetals based on their physical and chemical properties." },
+  { "term": "Isotope", "def": "('same place' on the table) a version of an element with the same number of protons but a different number of neutrons, resulting in a different atomic mass." },
+  { "term": "Ion", "def": "('go'...since move towards electrodes) an atom or molecule that has gained or lost electrons, giving it a net electric charge." },
   { "term": "Atom", "def": "The smallest unit of matter that retains the identity of an element, composed of protons, neutrons, and electrons." },
   { "term": "Element", "def": "A pure substance made of only one kind of atom, defined by its number of protons." },
   { "term": "Compound", "def": "A substance formed when atoms of two or more different elements chemically bond together." },
